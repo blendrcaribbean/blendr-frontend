@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login — Blendr</title>
-  <link rel="icon" href="../assets/wp-images/cropped-Blendr-Favicon-02-32x32.png" />
+  <link rel="icon" href="https://blendrcaribbean.com/wp-content/uploads/2020/04/cropped-Blendr-Favicon-02-32x32.png" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
@@ -114,7 +114,7 @@
 <body>
   <div class="login-card">
     <div class="login-logo">
-      <img src="../assets/wp-images/Blendr-New-COncept-Logo-02-01.png" alt="Blendr" style="filter:invert(0)" />
+      <img src="https://blendrcaribbean.com/wp-content/uploads/2020/04/Blendr-New-COncept-Logo-02-01.png" alt="Blendr" style="filter:invert(0)" />
     </div>
     <p class="login-title">Admin Panel</p>
 
@@ -157,7 +157,7 @@
       errMsg.style.display = 'none';
 
       try {
-        const res = await fetch('/api/admin/login', {
+        const res = await fetch('https://api.blendrcaribbean.com/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })

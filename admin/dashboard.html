@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard — Blendr</title>
-  <link rel="icon" href="../assets/wp-images/cropped-Blendr-Favicon-02-32x32.png" />
+  <link rel="icon" href="https://blendrcaribbean.com/wp-content/uploads/2020/04/cropped-Blendr-Favicon-02-32x32.png" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
@@ -193,7 +193,7 @@
 <!-- ── SIDEBAR ───────────────────────────────────────────────── -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-brand">
-    <img src="../assets/wp-images/Blendr-Logo_LB-1024x431.png" alt="Blendr" />
+    <img src="https://blendrcaribbean.com/wp-content/uploads/2021/04/Blendr-Logo_LB-1024x431.png" alt="Blendr" />
     <p class="sidebar-label">Admin Panel</p>
   </div>
   <nav class="sidebar-nav">
@@ -656,7 +656,7 @@
    ══════════════════════════════════════════════════════════════ */
 const TOKEN = localStorage.getItem('blendr_admin_token');
 if (!TOKEN) location.href = 'index.html';
-const API = '/api/admin';
+const API = 'https://api.blendrcaribbean.com/api/admin';
 const H = () => ({ 'Content-Type':'application/json', 'Authorization':`Bearer ${TOKEN}` });
 
 /* ══════════════════════════════════════════════════════════════
