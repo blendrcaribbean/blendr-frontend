@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — Blendr</title>
+  <link rel="icon" href="../assets/wp-images/cropped-Blendr-Favicon-02-32x32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --dark:#101F21; --dark2:#1D2527; --teal:#3D6F74; --teal-l:#B5DFEA;
+    --pale:#E9FAFF; --orange:#FFBC7D; --white:#fff; --text:#333; --muted:#707070;
+    --border:rgba(0,0,0,0.09); --sidebar:260px; --danger:#dc2626; --success:#16a34a;
+  }
+  body { font-family:'Nunito Sans',sans-serif; background:#f4f6f8; color:var(--text); }
+  a { text-decoration:none; color:inherit; }
+  button { font-family:inherit; cursor:pointer; }
+
+  /* ── Sidebar ── */
+  .sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar); background:var(--dark); display:flex; flex-direction:column; z-index:100; overflow-y:auto; }
+  .sidebar-brand { padding:1.5rem 1.5rem 1rem; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand img { height:36px; filter:brightness(0) invert(1); opacity:.9; }
+  .sidebar-label { font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.3); font-weight:700; margin-top:.35rem; }
+  .sidebar-nav { padding:1.25rem 0; flex:1; }
+  .nav-sec { font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.25); font-weight:700; padding:.5rem 1.5rem; margin-top:.5rem; }
+  .sidebar-link { display:flex; align-items:center; gap:.75rem; padding:.7rem 1.5rem; font-size:.86rem; font-weight:600; color:rgba(255,255,255,.6); transition:background .2s,color .2s; border-left:3px solid transparent; position:relative; }
+  .sidebar-link i { width:16px; text-align:center; }
+  .sidebar-link:hover,.sidebar-link.active { background:rgba(255,255,255,.06); color:var(--white); border-left-color:var(--orange); }
+  .sidebar-link.active { color:var(--orange); }
+  .badge { background:var(--orange); color:var(--dark); font-size:.6rem; font-weight:700; border-radius:100px; padding:1px 7px; margin-left:auto; }
+  .sidebar-footer { padding:1rem 1.5rem; border-top:1px solid rgba(255,255,255,.08); }
+  .sidebar-footer button { display:flex; align-items:center; gap:.6rem; width:100%; background:none; border:none; color:rgba(255,255,255,.4); font-size:.84rem; padding:.5rem 0; transition:color .2s; }
+  .sidebar-footer button:hover { color:#fff; }
+
+  /* ── Main ── */
+  .main-wrap { margin-left:var(--sidebar); min-height:100vh; }
+  .topbar { background:var(--white); padding:0 2rem; height:62px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50; }
+  .topbar-title { font-weight:700; font-size:1.05rem; color:var(--dark); }
+  .topbar-actions a { font-size:.8rem; font-weight:700; color:var(--teal); display:flex; align-items:center; gap:.4rem; }
+  .topbar-actions a:hover { color:var(--dark); }
+  .content { padding:2rem; }
+
+  /* ── Panels ── */
+  .panel { display:none; } .panel.active { display:block; }
+
+  /* ── Stats ── */
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .stat-card { background:var(--white); border-radius:8px; padding:1.4rem; border-left:4px solid var(--teal); }
+  .stat-card.orange { border-left-color:var(--orange); }
+  .stat-card.green  { border-left-color:#16a34a; }
+  .stat-card.red    { border-left-color:#dc2626; }
+  .stat-val { font-size:1.9rem; font-weight:700; color:var(--dark); }
+  .stat-label { font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.2rem; }
+
+  /* ── Section header ── */
+  .sec-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; gap:1rem; flex-wrap:wrap; }
+  .sec-header h2 { font-size:1rem; font-weight:700; color:var(--dark); }
+  .sec-header .right { display:flex; gap:.5rem; align-items:center; }
+
+  /* ── Buttons ── */
+  .btn { display:inline-flex; align-items:center; gap:.45rem; padding:9px 18px; border-radius:4px; border:none; font-size:.78rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; transition:background .2s,color .2s; }
+  .btn-dark   { background:var(--dark);  color:#fff; } .btn-dark:hover   { background:var(--teal); }
+  .btn-teal   { background:var(--teal);  color:#fff; } .btn-teal:hover   { background:var(--dark); }
+  .btn-ghost  { background:#f4f6f8; color:var(--muted); border:1px solid var(--border); } .btn-ghost:hover { background:#e5e7eb; }
+  .btn-danger { background:#fef2f2; color:var(--danger); } .btn-danger:hover { background:#fecaca; }
+  .btn-sm { padding:5px 12px; font-size:.7rem; }
+  .btn-edit   { background:var(--pale); color:var(--teal); } .btn-edit:hover { background:var(--teal-l); }
+  .action-grp { display:flex; gap:.35rem; }
+
+  /* ── Table ── */
+  .data-table { width:100%; border-collapse:collapse; background:var(--white); border-radius:8px; overflow:hidden; }
+  .data-table th { padding:.7rem 1rem; text-align:left; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); background:#fafbfc; border-bottom:1px solid var(--border); }
+  .data-table td { padding:.85rem 1rem; font-size:.87rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+  .data-table tr:last-child td { border-bottom:none; }
+  .data-table tr:hover td { background:#fafbfc; }
+  .thumb { width:60px; height:42px; object-fit:cover; border-radius:4px; }
+  .logo-thumb { width:80px; height:48px; object-fit:contain; border-radius:4px; background:#f4f6f8; padding:4px; }
+  .pill { display:inline-block; padding:2px 9px; border-radius:100px; font-size:.63rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; background:var(--pale); color:var(--teal); border:1px solid var(--teal-l); margin:1px; }
+  .unread-dot { width:8px; height:8px; border-radius:50%; background:var(--orange); display:inline-block; margin-right:.4rem; }
+  tr.unread td { font-weight:600; }
+
+  /* ── Modal ── */
+  .modal-bd { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:500; display:none; align-items:center; justify-content:center; padding:1.5rem; }
+  .modal-bd.open { display:flex; }
+  .modal { background:var(--white); border-radius:8px; width:100%; max-width:660px; max-height:90vh; overflow-y:auto; padding:2rem; animation:mIn .22s ease; }
+  .modal.modal-wide { max-width:860px; }
+  @keyframes mIn { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+  .modal-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.75rem; }
+  .modal-hdr h3 { font-size:1rem; font-weight:700; color:var(--dark); }
+  .modal-close { width:30px; height:30px; border-radius:50%; background:#f4f6f8; border:none; font-size:1.1rem; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+  .modal-close:hover { background:#e5e7eb; }
+  .modal-ftr { display:flex; gap:.6rem; justify-content:flex-end; margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border); }
+
+  /* ── Form ── */
+  .fg { display:flex; flex-direction:column; gap:.32rem; margin-bottom:1rem; }
+  .fg label { font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--dark); }
+  .fg label .req { color:var(--teal); }
+  .fg input,.fg textarea,.fg select {
+    width:100%; padding:10px 14px; font-size:.9rem; font-family:inherit;
+    background:var(--pale); border:1.5px solid transparent; border-radius:4px;
+    outline:none; color:var(--text); transition:border-color .2s;
+  }
+  .fg input:focus,.fg textarea:focus,.fg select:focus { border-color:var(--teal); background:#fff; }
+  .fg textarea { min-height:88px; resize:vertical; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .img-preview { width:100%; max-height:180px; object-fit:cover; border-radius:4px; margin-top:.5rem; display:none; }
+
+  /* ── Multi-select ── */
+  .ms-wrap { position:relative; }
+  .ms-display {
+    min-height:42px; padding:6px 10px; background:var(--pale); border:1.5px solid transparent;
+    border-radius:4px; cursor:pointer; display:flex; flex-wrap:wrap; gap:4px; align-items:center;
+    transition:border-color .2s;
+  }
+  .ms-display:focus-within,.ms-display.open { border-color:var(--teal); background:#fff; }
+  .ms-pill {
+    display:inline-flex; align-items:center; gap:4px; padding:3px 10px 3px 10px;
+    background:var(--teal); color:#fff; border-radius:100px; font-size:.7rem; font-weight:700;
+    letter-spacing:.05em;
+  }
+  .ms-pill .rm { background:none; border:none; color:rgba(255,255,255,.75); font-size:.85rem; line-height:1; padding:0; margin-left:2px; }
+  .ms-pill .rm:hover { color:#fff; }
+  .ms-placeholder { font-size:.88rem; color:var(--muted); padding:2px 4px; }
+  .ms-dropdown {
+    position:absolute; top:calc(100% + 4px); left:0; right:0; background:var(--white);
+    border:1.5px solid var(--teal-l); border-radius:6px; box-shadow:0 8px 24px rgba(0,0,0,.12);
+    z-index:200; display:none; max-height:220px; overflow-y:auto;
+  }
+  .ms-dropdown.open { display:block; }
+  .ms-search { padding:.6rem .75rem; border-bottom:1px solid var(--border); }
+  .ms-search input { width:100%; border:1px solid var(--border); border-radius:4px; padding:5px 10px; font-size:.85rem; font-family:inherit; outline:none; }
+  .ms-option { display:flex; align-items:center; gap:.6rem; padding:.55rem .75rem; cursor:pointer; transition:background .15s; font-size:.88rem; }
+  .ms-option:hover { background:var(--pale); }
+  .ms-option input[type=checkbox] { accent-color:var(--teal); width:15px; height:15px; flex-shrink:0; }
+  .ms-option.selected { background:var(--pale); font-weight:600; }
+  .ms-add-row { padding:.5rem .75rem; border-top:1px solid var(--border); }
+  .ms-add-row button { font-size:.78rem; color:var(--teal); background:none; border:none; display:flex; align-items:center; gap:.35rem; }
+  .ms-add-row button:hover { color:var(--dark); }
+  .ms-empty { padding:.75rem; text-align:center; color:var(--muted); font-size:.85rem; }
+
+  /* ── Logo picker ── */
+  .logo-picker-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:.75rem; margin-top:1rem; }
+  .logo-tile {
+    background:#fafbfc; border:2px solid var(--border); border-radius:6px;
+    padding:.75rem; display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    cursor:pointer; transition:border-color .2s,background .2s;
+  }
+  .logo-tile:hover { border-color:var(--teal-l); background:var(--pale); }
+  .logo-tile.selected { border-color:var(--teal); background:var(--pale); }
+  .logo-tile img { width:80px; height:50px; object-fit:contain; }
+  .logo-tile span { font-size:.7rem; font-weight:600; color:var(--muted); text-align:center; line-height:1.3; }
+  .logo-current { display:flex; align-items:center; gap:.75rem; padding:.75rem; background:var(--pale); border-radius:6px; border:1.5px solid var(--teal-l); margin-bottom:.75rem; }
+  .logo-current img { width:80px; height:48px; object-fit:contain; }
+  .logo-current .clear-logo { background:none; border:none; color:var(--danger); font-size:.78rem; margin-left:auto; display:flex; align-items:center; gap:.3rem; }
+  .logo-current .clear-logo:hover { text-decoration:underline; }
+
+  /* ── Settings ── */
+  .taxonomy-group { background:var(--white); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem; }
+  .taxonomy-group h3 { font-size:.8rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--dark); margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+  .taxonomy-group h3 i { color:var(--teal); }
+  .tag-list { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+  .tag-item { display:inline-flex; align-items:center; gap:.4rem; padding:5px 12px; background:var(--pale); border:1px solid var(--teal-l); border-radius:100px; font-size:.78rem; font-weight:600; color:var(--teal); }
+  .tag-item .del-tag { background:none; border:none; color:var(--muted); font-size:.9rem; line-height:1; padding:0; transition:color .15s; }
+  .tag-item .del-tag:hover { color:var(--danger); }
+  .add-tag-row { display:flex; gap:.5rem; }
+  .add-tag-row input { flex:1; padding:8px 12px; border:1.5px solid var(--border); border-radius:4px; font-size:.88rem; font-family:inherit; outline:none; transition:border-color .2s; }
+  .add-tag-row input:focus { border-color:var(--teal); }
+
+  /* ── Inquiries ── */
+  .inquiry-msg { font-size:.85rem; color:var(--muted); white-space:pre-wrap; max-width:320px; }
+  .purpose-list { display:flex; flex-wrap:wrap; gap:3px; }
+
+  /* ── Inquiry detail modal ── */
+  .inq-detail-row { display:flex; gap:.75rem; margin-bottom:.75rem; font-size:.9rem; }
+  .inq-detail-row .lbl { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:var(--teal); min-width:100px; padding-top:1px; }
+  .inq-detail-row .val { color:var(--text); }
+
+  /* ── Toast ── */
+  .toast-wrap { position:fixed; bottom:1.5rem; right:1.5rem; z-index:9999; display:flex; flex-direction:column; gap:.5rem; pointer-events:none; }
+  .toast { background:var(--dark); color:#fff; padding:.75rem 1.25rem; border-radius:6px; font-size:.85rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,.2); animation:toastIn .3s ease; pointer-events:auto; display:flex; align-items:center; gap:.5rem; }
+  .toast.success { background:#16a34a; }
+  .toast.error   { background:#dc2626; }
+  @keyframes toastIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── Responsive ── */
+  @media(max-width:900px) { .sidebar{transform:translateX(-100%);transition:transform .3s;} .sidebar.open{transform:translateX(0);} .main-wrap{margin-left:0;} .form-row{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ───────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <img src="../assets/wp-images/Blendr-Logo_LB-1024x431.png" alt="Blendr" />
+    <p class="sidebar-label">Admin Panel</p>
+  </div>
+  <nav class="sidebar-nav">
+    <p class="nav-sec">Content</p>
+    <a class="sidebar-link active" href="#" data-panel="portfolio"><i class="fas fa-images"></i> Portfolio</a>
+    <a class="sidebar-link" href="#" data-panel="clients"><i class="fas fa-building"></i> Client Logos</a>
+    <p class="nav-sec">Inbox</p>
+    <a class="sidebar-link" href="#" data-panel="inquiries"><i class="fas fa-envelope"></i> Inquiries <span class="badge" id="badge-inq" style="display:none">0</span></a>
+    <a class="sidebar-link" href="#" data-panel="newsletter"><i class="fas fa-paper-plane"></i> Newsletter</a>
+    <p class="nav-sec">Delivery</p>
+    <a class="sidebar-link" href="#" data-panel="transfers"><i class="fas fa-paper-plane"></i> File Transfers</a>
+    <a class="sidebar-link" href="#" data-panel="recipients"><i class="fas fa-address-book"></i> Client Database</a>
+    <p class="nav-sec">Config</p>
+    <a class="sidebar-link" href="#" data-panel="settings"><i class="fas fa-sliders-h"></i> Tags &amp; Categories</a>
+    <p class="nav-sec">Site</p>
+    <a class="sidebar-link" href="../index.html" target="_blank"><i class="fas fa-external-link-alt"></i> View Website</a>
+  </nav>
+  <div class="sidebar-footer">
+    <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</aside>
+
+<!-- ── MAIN ─────────────────────────────────────────────────── -->
+<div class="main-wrap">
+  <header class="topbar">
+    <span class="topbar-title" id="page-title">Portfolio</span>
+    <div class="topbar-actions">
+      <a href="../index.html" target="_blank"><i class="fas fa-globe"></i> View Site</a>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Stats (always visible) -->
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" id="s-portfolio">—</div><div class="stat-label">Portfolio Items</div></div>
+      <div class="stat-card orange"><div class="stat-val" id="s-clients">—</div><div class="stat-label">Client Logos</div></div>
+      <div class="stat-card green"><div class="stat-val" id="s-inq">—</div><div class="stat-label">Inquiries</div></div>
+      <div class="stat-card red"><div class="stat-val" id="s-unread">—</div><div class="stat-label">Unread</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-news">—</div><div class="stat-label">Subscribers</div></div>
+      <div class="stat-card"><div class="stat-val" id="s-transfers">—</div><div class="stat-label">Transfers</div></div>
+    </div>
+
+    <!-- ── PORTFOLIO PANEL ───────────────────────────────────── -->
+    <div class="panel active" id="panel-portfolio">
+      <div class="sec-header">
+        <h2>Portfolio Items</h2>
+        <button class="btn btn-dark" id="add-pf-btn"><i class="fas fa-plus"></i> Add Project</button>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Image</th><th>Title</th><th>Categories</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="pf-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- ── CLIENTS PANEL ─────────────────────────────────────── -->
+    <div class="panel" id="panel-clients">
+      <div class="sec-header">
+        <h2>Client Logos</h2>
+        <button class="btn btn-dark" id="add-cl-btn"><i class="fas fa-plus"></i> Add Client</button>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Logo</th><th>Name</th><th>Portfolio Link</th><th>Actions</th></tr></thead>
+        <tbody id="cl-tbody"><tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- ── CLIENT DATABASE PANEL ───────────────────────────── -->
+    <div class="panel" id="panel-recipients">
+      <div class="sec-header">
+        <h2>Client Database</h2>
+        <p style="font-size:.82rem;color:var(--muted);margin:0;">Clients are added automatically when you send a transfer. Edit or remove them here.</p>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Name</th><th>Email</th><th>Last Transfer</th><th>Total Transfers</th><th>Actions</th></tr></thead>
+        <tbody id="rec-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">No clients yet.</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- ── INQUIRIES PANEL ───────────────────────────────────── -->
+    <div class="panel" id="panel-inquiries">
+      <div class="sec-header">
+        <h2>Contact Inquiries</h2>
+        <button class="btn btn-danger btn-sm" id="clear-inq-btn" onclick="clearAllInquiries()"><i class="fas fa-trash"></i> Clear All</button>
+      </div>
+      <table class="data-table">
+        <thead><tr><th></th><th>Date</th><th>Name</th><th>Email</th><th>Purpose</th><th>Actions</th></tr></thead>
+        <tbody id="inq-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- ── NEWSLETTER PANEL ──────────────────────────────────── -->
+    <div class="panel" id="panel-newsletter">
+      <div class="sec-header">
+        <h2>Newsletter Subscribers</h2>
+        <div class="right">
+          <button class="btn btn-ghost btn-sm" onclick="exportNewsletter()"><i class="fas fa-download"></i> Export CSV</button>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Email</th><th>Name</th><th>Source</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="news-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- ── SETTINGS PANEL ───────────────────────────────────── -->
+    <div class="panel" id="panel-settings">
+      <div class="sec-header"><h2>Tags &amp; Categories</h2></div>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem;">These lists populate the dropdowns in the portfolio form. Changes save immediately.</p>
+
+      <div class="taxonomy-group">
+        <h3><i class="fas fa-tag"></i> Categories (Filter bar on Portfolio page)</h3>
+        <div class="tag-list" id="tax-categories"></div>
+        <div class="add-tag-row">
+          <input type="text" id="new-category" placeholder="Add category…" />
+          <button class="btn btn-teal btn-sm" onclick="addTax('categories')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>
+
+      <div class="taxonomy-group">
+        <h3><i class="fas fa-tags"></i> Display Tags (shown on portfolio cards)</h3>
+        <div class="tag-list" id="tax-tags"></div>
+        <div class="add-tag-row">
+          <input type="text" id="new-tag" placeholder="Add tag…" />
+          <button class="btn btn-teal btn-sm" onclick="addTax('tags')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>
+
+      <div class="taxonomy-group">
+        <h3><i class="fas fa-wrench"></i> Services Delivered</h3>
+        <div class="tag-list" id="tax-services"></div>
+        <div class="add-tag-row">
+          <input type="text" id="new-service" placeholder="Add service…" />
+          <button class="btn btn-teal btn-sm" onclick="addTax('services')"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TRANSFERS PANEL ──────────────────────────────────── -->
+    <div class="panel" id="panel-transfers">
+      <div class="sec-header">
+        <h2>File Transfers</h2>
+        <button class="btn btn-dark" id="new-transfer-btn"><i class="fas fa-plus"></i> New Transfer</button>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Title</th><th>Client</th><th>Files</th><th>Expires</th><th>Downloaded</th><th>Actions</th></tr></thead>
+        <tbody id="tr-tbody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-wrap -->
+
+<!-- ═══════════════════ PORTFOLIO MODAL ═══════════════════════ -->
+<div class="modal-bd" id="pf-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="pf-modal-title">Add Portfolio Item</h3>
+      <button class="modal-close" onclick="closeModal('pf-modal')">&times;</button>
+    </div>
+    <form id="pf-form" novalidate>
+      <input type="hidden" id="pf-id" />
+
+      <div class="fg">
+        <label>Project Title <span class="req">*</span></label>
+        <input type="text" id="pf-title" required placeholder="e.g. STINAPA Bonaire" />
+      </div>
+
+      <div class="form-row">
+        <div class="fg">
+          <label>Date / Period</label>
+          <input type="text" id="pf-date" placeholder="e.g. October 2023" />
+        </div>
+        <div class="fg">
+          <label>URL Slug <span class="req">*</span></label>
+          <input type="text" id="pf-slug" required placeholder="e.g. stinapa-bonaire" />
+        </div>
+      </div>
+
+      <!-- Multi-select: Categories -->
+      <div class="fg">
+        <label>Categories</label>
+        <div class="ms-wrap" id="ms-categories">
+          <div class="ms-display" id="ms-categories-display" onclick="toggleMs('ms-categories')">
+            <span class="ms-placeholder" id="ms-categories-ph">Select categories…</span>
+          </div>
+          <div class="ms-dropdown" id="ms-categories-dd">
+            <div class="ms-search"><input type="text" placeholder="Search…" oninput="filterMs('ms-categories',this.value)" /></div>
+            <div id="ms-categories-opts"></div>
+            <div class="ms-add-row"><button type="button" onclick="addFromMs('ms-categories','categories')"><i class="fas fa-plus"></i> Add new option</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi-select: Display Tags -->
+      <div class="fg">
+        <label>Display Tags</label>
+        <div class="ms-wrap" id="ms-tags">
+          <div class="ms-display" id="ms-tags-display" onclick="toggleMs('ms-tags')">
+            <span class="ms-placeholder" id="ms-tags-ph">Select tags…</span>
+          </div>
+          <div class="ms-dropdown" id="ms-tags-dd">
+            <div class="ms-search"><input type="text" placeholder="Search…" oninput="filterMs('ms-tags',this.value)" /></div>
+            <div id="ms-tags-opts"></div>
+            <div class="ms-add-row"><button type="button" onclick="addFromMs('ms-tags','tags')"><i class="fas fa-plus"></i> Add new option</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thumbnail -->
+      <div class="fg">
+        <label>Thumbnail Image</label>
+        <input type="file" id="pf-img-file" accept="image/*" />
+        <small style="color:var(--muted);font-size:.76rem;margin-top:2px;">Or paste URL below</small>
+        <input type="text" id="pf-img-url" placeholder="https://…" style="margin-top:.35rem;" oninput="previewImg('pf-img-url','pf-img-prev')" />
+        <img id="pf-img-prev" class="img-preview" src="" alt="Preview" />
+      </div>
+
+      <!-- Client Logo Picker -->
+      <div class="fg">
+        <label>Client Logo</label>
+        <div id="pf-logo-current" style="display:none"></div>
+        <button type="button" class="btn btn-ghost btn-sm" id="open-logo-picker" onclick="openLogoPicker()" style="margin-top:.35rem;">
+          <i class="fas fa-search"></i> Choose from uploaded logos
+        </button>
+        <input type="hidden" id="pf-logo-url" />
+      </div>
+
+      <div class="fg">
+        <label>The Challenge</label>
+        <textarea id="pf-challenge" placeholder="Describe the project challenge…"></textarea>
+      </div>
+
+      <div class="fg">
+        <label>Our Approach</label>
+        <textarea id="pf-approach" placeholder="Describe the creative approach…"></textarea>
+      </div>
+
+      <!-- Multi-select: Services Delivered -->
+      <div class="fg">
+        <label>Services Delivered</label>
+        <div class="ms-wrap" id="ms-services">
+          <div class="ms-display" id="ms-services-display" onclick="toggleMs('ms-services')">
+            <span class="ms-placeholder" id="ms-services-ph">Select services…</span>
+          </div>
+          <div class="ms-dropdown" id="ms-services-dd">
+            <div class="ms-search"><input type="text" placeholder="Search…" oninput="filterMs('ms-services',this.value)" /></div>
+            <div id="ms-services-opts"></div>
+            <div class="ms-add-row"><button type="button" onclick="addFromMs('ms-services','services')"><i class="fas fa-plus"></i> Add new option</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Gallery Images (one URL per line)</label>
+        <textarea id="pf-gallery" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg" style="min-height:80px;"></textarea>
+      </div>
+
+      <div class="modal-ftr">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('pf-modal')">Cancel</button>
+        <button type="submit" class="btn btn-dark" id="pf-save-btn">Save Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════ CLIENT MODAL ══════════════════════════ -->
+<div class="modal-bd" id="cl-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="cl-modal-title">Add Client Logo</h3>
+      <button class="modal-close" onclick="closeModal('cl-modal')">&times;</button>
+    </div>
+    <form id="cl-form" novalidate>
+      <input type="hidden" id="cl-id" />
+      <div class="fg">
+        <label>Client Name <span class="req">*</span></label>
+        <input type="text" id="cl-name" required placeholder="e.g. Peanuts Fresh Market" />
+      </div>
+      <div class="fg">
+        <label>Logo Image</label>
+        <input type="file" id="cl-img-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" />
+        <small style="color:var(--teal);font-size:.76rem;margin-top:2px;"><i class="fas fa-magic"></i> Uploaded logos are automatically converted to <strong>#aaaaaa</strong> grey to match the site style.</small>
+        <small style="color:var(--muted);font-size:.76rem;margin-top:4px;">Or paste URL below (no conversion applied)</small>
+        <input type="text" id="cl-img-url" placeholder="https://…" style="margin-top:.35rem;" oninput="previewImg('cl-img-url','cl-img-prev')" />
+        <img id="cl-img-prev" class="img-preview" src="" alt="Preview" />
+      </div>
+      <div class="fg">
+        <label>Portfolio Page Link <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+        <input type="text" id="cl-link" placeholder="portfolio/client-name.html" />
+      </div>
+      <div class="modal-ftr">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('cl-modal')">Cancel</button>
+        <button type="submit" class="btn btn-dark">Save Client</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════ EDIT CLIENT MODAL ════════════════════ -->
+<div class="modal-bd" id="rec-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>Edit Client</h3>
+      <button class="modal-close" onclick="closeModal('rec-modal')">&times;</button>
+    </div>
+    <form id="rec-form" novalidate>
+      <input type="hidden" id="rec-id" />
+      <div class="fg">
+        <label>Name <span class="req">*</span></label>
+        <input type="text" id="rec-name" required />
+      </div>
+      <div class="fg">
+        <label>Email <span class="req">*</span></label>
+        <input type="email" id="rec-email" required />
+      </div>
+      <div class="modal-ftr">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('rec-modal')">Cancel</button>
+        <button type="submit" class="btn btn-dark">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════ TRANSFER MODAL ═══════════════════════ -->
+<div class="modal-bd" id="tr-modal">
+  <div class="modal modal-wide">
+    <div class="modal-hdr">
+      <h3>New File Transfer</h3>
+      <button class="modal-close" onclick="closeModal('tr-modal')">&times;</button>
+    </div>
+
+    <!-- Step 1: details + file selection -->
+    <div id="tr-step-1">
+      <!-- Drop zone -->
+      <div id="tr-dropzone" style="
+        border:2px dashed var(--teal-l); border-radius:10px; padding:2.5rem 1.5rem;
+        text-align:center; cursor:pointer; background:var(--pale); margin-bottom:1.25rem;
+        transition:border-color .2s,background .2s; position:relative;">
+        <input type="file" id="tr-file-input" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;" />
+        <div style="pointer-events:none;">
+          <div style="font-size:2rem;margin-bottom:.5rem;">📁</div>
+          <p style="font-weight:700;color:var(--dark);margin-bottom:4px;">Drag &amp; drop files here</p>
+          <p style="font-size:.82rem;color:var(--muted);">or click to browse &mdash; up to 5 GB per file</p>
+        </div>
+      </div>
+
+      <!-- Selected files list -->
+      <div id="tr-file-list" style="display:none;margin-bottom:1rem;"></div>
+
+      <div class="form-row">
+        <div class="fg">
+          <label>Transfer Title <span class="req">*</span></label>
+          <input type="text" id="tr-title" placeholder="e.g. Brand Identity Files" />
+        </div>
+        <div class="fg">
+          <label>Expiration</label>
+          <select id="tr-expiry">
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="30" selected>30 days</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="fg" style="position:relative;">
+          <label>Client Name <span class="req">*</span></label>
+          <input type="text" id="tr-client-name" placeholder="e.g. John Smith" autocomplete="off" />
+        </div>
+        <div class="fg" style="position:relative;">
+          <label>Client Email <span class="req">*</span></label>
+          <input type="email" id="tr-client-email" placeholder="client@example.com" autocomplete="off" />
+          <div id="tr-suggestions" style="
+            position:absolute;top:calc(100% + 2px);left:0;right:0;background:#fff;
+            border:1.5px solid var(--teal-l);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.1);
+            z-index:200;display:none;max-height:180px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Password Protection <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+        <input type="text" id="tr-password" placeholder="Leave blank for no password" autocomplete="new-password" />
+        <small style="color:var(--muted);font-size:.76rem;margin-top:2px;">If set, this password will be included in the email to the client.</small>
+      </div>
+
+      <div class="modal-ftr">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('tr-modal')">Cancel</button>
+        <button type="button" class="btn btn-dark" id="tr-send-btn" onclick="startTransfer()">
+          <i class="fas fa-cloud-upload-alt"></i> Upload &amp; Send
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: progress -->
+    <div id="tr-step-2" style="display:none;">
+      <div style="text-align:center;padding:1.5rem 0 1rem;">
+        <div style="font-size:2rem;margin-bottom:.75rem;">⬆️</div>
+        <h3 style="font-size:1rem;color:var(--dark);margin-bottom:.5rem;" id="tr-progress-label">Uploading…</h3>
+        <div style="background:#f0f0f0;border-radius:100px;height:8px;overflow:hidden;margin:.75rem 0;">
+          <div id="tr-progress-bar" style="background:var(--teal);height:100%;width:0%;transition:width .3s;border-radius:100px;"></div>
+        </div>
+        <p id="tr-progress-detail" style="font-size:.82rem;color:var(--muted);">Preparing…</p>
+      </div>
+    </div>
+
+    <!-- Step 3: done -->
+    <div id="tr-step-3" style="display:none;">
+      <div style="text-align:center;padding:1.5rem 0 1rem;">
+        <div style="font-size:2.5rem;margin-bottom:.75rem;">✅</div>
+        <h3 style="font-size:1.1rem;color:var(--dark);margin-bottom:.5rem;">Transfer Sent!</h3>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:1.25rem;">The client has been emailed. You can also copy the link below.</p>
+        <div style="display:flex;gap:.5rem;align-items:center;background:var(--pale);border:1.5px solid var(--teal-l);border-radius:6px;padding:.6rem .75rem;">
+          <input id="tr-link-out" type="text" readonly style="flex:1;border:none;background:none;font-size:.85rem;color:var(--dark);outline:none;" />
+          <button class="btn btn-teal btn-sm" onclick="copyTransferLink()"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+      </div>
+      <div class="modal-ftr">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('tr-modal');loadAll()">Done</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ LOGO PICKER MODAL ═════════════════════ -->
+<div class="modal-bd" id="logo-picker-modal">
+  <div class="modal modal-wide">
+    <div class="modal-hdr">
+      <h3>Choose Client Logo</h3>
+      <button class="modal-close" onclick="closeModal('logo-picker-modal')">&times;</button>
+    </div>
+    <p style="color:var(--muted);font-size:.85rem;margin-bottom:.5rem;">Click a logo to assign it to this project. Logos are managed in the <strong>Client Logos</strong> section.</p>
+    <div class="logo-picker-grid" id="logo-picker-grid"></div>
+    <div class="modal-ftr">
+      <button type="button" class="btn btn-ghost" onclick="closeModal('logo-picker-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ INQUIRY DETAIL MODAL ══════════════════ -->
+<div class="modal-bd" id="inq-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3>Inquiry Detail</h3>
+      <button class="modal-close" onclick="closeModal('inq-modal')">&times;</button>
+    </div>
+    <div id="inq-detail-body"></div>
+    <div class="modal-ftr">
+      <button type="button" class="btn btn-ghost" onclick="closeModal('inq-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   AUTH & CONFIG
+   ══════════════════════════════════════════════════════════════ */
+const TOKEN = localStorage.getItem('blendr_admin_token');
+if (!TOKEN) location.href = 'index.html';
+const API = '/api/admin';
+const H = () => ({ 'Content-Type':'application/json', 'Authorization':`Bearer ${TOKEN}` });
+
+/* ══════════════════════════════════════════════════════════════
+   STATE
+   ══════════════════════════════════════════════════════════════ */
+let portfolioData = [], clientsData = [], taxonomy = { categories:[], tags:[], services:[] };
+let inquiriesData = [], newsletterData = [];
+
+/* ══════════════════════════════════════════════════════════════
+   TOAST
+   ══════════════════════════════════════════════════════════════ */
+function toast(msg, type='') {
+  const w = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas fa-${type==='success'?'check':type==='error'?'times':'info-circle'}"></i> ${msg}`;
+  w.appendChild(t);
+  setTimeout(()=>t.remove(), 3500);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR NAV
+   ══════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.sidebar-link[data-panel]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    link.classList.add('active');
+    document.getElementById(`panel-${link.dataset.panel}`).classList.add('active');
+    document.getElementById('page-title').textContent = link.textContent.trim();
+  });
+});
+document.getElementById('logout-btn').addEventListener('click', () => {
+  localStorage.removeItem('blendr_admin_token'); location.href = 'index.html';
+});
+
+/* ══════════════════════════════════════════════════════════════
+   MODAL HELPERS
+   ══════════════════════════════════════════════════════════════ */
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bd').forEach(bd => {
+  bd.addEventListener('click', e => { if(e.target===bd) bd.classList.remove('open'); });
+});
+function previewImg(inputId, imgId) {
+  const v = document.getElementById(inputId).value;
+  const img = document.getElementById(imgId);
+  img.src = v; img.style.display = v ? 'block' : 'none';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MULTI-SELECT COMPONENT
+   ══════════════════════════════════════════════════════════════ */
+const msState = {}; // { id: Set<string> }
+
+function initMs(id, options, selected=[]) {
+  msState[id] = new Set(selected);
+  renderMsOpts(id, options);
+  renderMsPills(id);
+}
+
+function renderMsOpts(id, options, filter='') {
+  const container = document.getElementById(`${id}-opts`);
+  const lower = filter.toLowerCase();
+  const filtered = options.filter(o => o.toLowerCase().includes(lower));
+  if (!filtered.length) { container.innerHTML = '<div class="ms-empty">No options found</div>'; return; }
+  container.innerHTML = filtered.map(o => {
+    const sel = msState[id]?.has(o);
+    return `<label class="ms-option ${sel?'selected':''}">
+      <input type="checkbox" ${sel?'checked':''} onchange="toggleMsOpt('${id}','${o.replace(/'/g,"\\'")}',this.checked)" />
+      ${o}
+    </label>`;
+  }).join('');
+}
+
+function renderMsPills(id) {
+  const display = document.getElementById(`${id}-display`);
+  const ph = document.getElementById(`${id}-ph`);
+  const selected = [...(msState[id] || [])];
+  // Remove old pills
+  display.querySelectorAll('.ms-pill').forEach(p=>p.remove());
+  if (!selected.length) { ph.style.display=''; return; }
+  ph.style.display = 'none';
+  selected.forEach(v => {
+    const pill = document.createElement('span');
+    pill.className = 'ms-pill';
+    pill.innerHTML = `${v}<button type="button" class="rm" onclick="toggleMsOpt('${id}','${v.replace(/'/g,"\\'")}',false)">&times;</button>`;
+    display.insertBefore(pill, ph);
+  });
+}
+
+function toggleMsOpt(id, value, checked) {
+  if (!msState[id]) msState[id] = new Set();
+  checked ? msState[id].add(value) : msState[id].delete(value);
+  // Re-render opts to update checkboxes
+  const taxKey = id === 'ms-categories' ? 'categories' : id === 'ms-tags' ? 'tags' : 'services';
+  renderMsOpts(id, taxonomy[taxKey]);
+  renderMsPills(id);
+}
+
+function toggleMs(id) {
+  const dd = document.getElementById(`${id}-dd`);
+  const display = document.getElementById(`${id}-display`);
+  const isOpen = dd.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.ms-display.open').forEach(d=>d.classList.remove('open'));
+  if (!isOpen) { dd.classList.add('open'); display.classList.add('open'); }
+}
+
+function filterMs(id, value) {
+  const taxKey = id === 'ms-categories' ? 'categories' : id === 'ms-tags' ? 'tags' : 'services';
+  renderMsOpts(id, taxonomy[taxKey], value);
+}
+
+function addFromMs(msId, taxKey) {
+  const val = prompt(`New ${taxKey.slice(0,-1)}:`);
+  if (!val?.trim()) return;
+  const v = val.trim();
+  if (!taxonomy[taxKey].includes(v)) {
+    taxonomy[taxKey].push(v);
+    saveTaxonomy();
+    renderTaxonomyPanel();
+  }
+  toggleMsOpt(msId, v, true);
+  toggleMs(msId);
+}
+
+function getMsValues(id) { return [...(msState[id] || [])]; }
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ms-wrap')) {
+    document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open'));
+    document.querySelectorAll('.ms-display.open').forEach(d=>d.classList.remove('open'));
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   LOAD ALL DATA
+   ══════════════════════════════════════════════════════════════ */
+async function loadAll() {
+  // Core data — if any of these fail, show error
+  try {
+    const [pR, cR, tR, iR, nR] = await Promise.all([
+      fetch(`${API}/portfolio`,  {headers:H()}),
+      fetch(`${API}/clients`,    {headers:H()}),
+      fetch(`${API}/taxonomy`,   {headers:H()}),
+      fetch(`${API}/inquiries`,  {headers:H()}),
+      fetch(`${API}/newsletter`, {headers:H()}),
+    ]);
+    portfolioData  = await pR.json();
+    clientsData    = await cR.json();
+    taxonomy       = await tR.json();
+    inquiriesData  = await iR.json();
+    newsletterData = await nR.json();
+  } catch(e) { toast('Failed to load data. Is server running?','error'); return; }
+
+  renderPortfolio(); renderClients(); renderInquiries(); renderNewsletter();
+  renderTaxonomyPanel(); updateStats();
+
+  // Transfers — optional, only available after server restart
+  try {
+    const [trR, recR] = await Promise.all([
+      fetch(`${API}/transfers`,  {headers:H()}),
+      fetch(`${API}/recipients`, {headers:H()}),
+    ]);
+    if (trR.ok && recR.ok) {
+      transfersData  = await trR.json();
+      recipientsData = await recR.json();
+      renderTransfers();
+      renderRecipients();
+      document.getElementById('s-transfers').textContent = transfersData.length;
+    }
+  } catch(e) { /* transfers not available yet */ }
+}
+
+function updateStats() {
+  const unread = inquiriesData.filter(i=>!i.read).length;
+  document.getElementById('s-portfolio').textContent  = portfolioData.length;
+  document.getElementById('s-clients').textContent    = clientsData.length;
+  document.getElementById('s-inq').textContent        = inquiriesData.length;
+  document.getElementById('s-unread').textContent     = unread;
+  document.getElementById('s-news').textContent       = newsletterData.length;
+  document.getElementById('s-transfers').textContent  = transfersData.length;
+  const badge = document.getElementById('badge-inq');
+  if (unread > 0) { badge.textContent = unread; badge.style.display = ''; }
+  else { badge.style.display = 'none'; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PORTFOLIO TABLE
+   ══════════════════════════════════════════════════════════════ */
+function renderPortfolio() {
+  const tb = document.getElementById('pf-tbody');
+  if (!portfolioData.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">No projects yet. Add your first one!</td></tr>'; return; }
+  tb.innerHTML = portfolioData.map(p=>`
+    <tr>
+      <td><img class="thumb" src="${p.imageUrl||''}" alt="${p.title}" onerror="this.style.display='none'" /></td>
+      <td><strong>${p.title}</strong><br><small style="color:var(--muted)">${p.slug||''}</small></td>
+      <td>${(p.categories||[]).map(c=>`<span class="pill">${c}</span>`).join('')}</td>
+      <td>${p.date||'—'}</td>
+      <td><div class="action-grp">
+        <button class="btn btn-edit btn-sm" onclick="editPortfolio('${p.id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePortfolio('${p.id}')"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+/* ── Open portfolio modal ── */
+function openPfModal(item=null) {
+  document.getElementById('pf-form').reset();
+  document.getElementById('pf-img-prev').style.display='none';
+  document.getElementById('pf-logo-current').style.display='none';
+  document.getElementById('pf-logo-url').value='';
+
+  document.getElementById('pf-id').value       = item?.id || '';
+  document.getElementById('pf-title').value    = item?.title || '';
+  document.getElementById('pf-date').value     = item?.date || '';
+  document.getElementById('pf-slug').value     = item?.slug || '';
+  document.getElementById('pf-challenge').value= item?.challenge || '';
+  document.getElementById('pf-approach').value = item?.approach || '';
+  document.getElementById('pf-gallery').value  = (item?.gallery||[]).join('\n');
+
+  if (item?.imageUrl) {
+    document.getElementById('pf-img-url').value = item.imageUrl;
+    const prev = document.getElementById('pf-img-prev');
+    prev.src = item.imageUrl; prev.style.display='block';
+  }
+  if (item?.logoUrl) {
+    setPickedLogo(item.logoUrl, clientsData.find(c=>c.imageUrl===item.logoUrl)?.name||'');
+  }
+
+  // Init multi-selects
+  initMs('ms-categories', taxonomy.categories, item?.categories||[]);
+  initMs('ms-tags',       taxonomy.tags,       item?.tags||[]);
+  initMs('ms-services',   taxonomy.services,   item?.servicesDelivered||[]);
+
+  // Slug auto-generate
+  document.getElementById('pf-slug').dataset.manual = item ? 'true' : '';
+
+  document.getElementById('pf-modal-title').textContent = item ? 'Edit Project' : 'Add Portfolio Item';
+  document.getElementById('pf-modal').classList.add('open');
+}
+
+function editPortfolio(id) { openPfModal(portfolioData.find(p=>p.id===id)); }
+
+async function deletePortfolio(id) {
+  if (!confirm('Delete this project?')) return;
+  await fetch(`${API}/portfolio/${id}`, {method:'DELETE', headers:H()});
+  toast('Project deleted'); loadAll();
+}
+
+document.getElementById('add-pf-btn').addEventListener('click', ()=>openPfModal());
+
+document.getElementById('pf-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('pf-save-btn');
+  btn.textContent='Saving…'; btn.disabled=true;
+
+  const id = document.getElementById('pf-id').value;
+  const body = {
+    id: id||undefined,
+    title:            document.getElementById('pf-title').value.trim(),
+    date:             document.getElementById('pf-date').value.trim(),
+    slug:             document.getElementById('pf-slug').value.trim(),
+    categories:       getMsValues('ms-categories'),
+    tags:             getMsValues('ms-tags'),
+    imageUrl:         document.getElementById('pf-img-url').value.trim(),
+    logoUrl:          document.getElementById('pf-logo-url').value.trim(),
+    challenge:        document.getElementById('pf-challenge').value.trim(),
+    approach:         document.getElementById('pf-approach').value.trim(),
+    servicesDelivered: getMsValues('ms-services'),
+    gallery:          document.getElementById('pf-gallery').value.split('\n').map(s=>s.trim()).filter(Boolean),
+  };
+
+  const method = id ? 'PUT' : 'POST';
+  const url    = id ? `${API}/portfolio/${id}` : `${API}/portfolio`;
+
+  try {
+    const res  = await fetch(url, {method, headers:H(), body:JSON.stringify(body)});
+    const saved = await res.json();
+
+    // File upload if selected
+    const file = document.getElementById('pf-img-file').files[0];
+    if (file && saved.id) {
+      const fd = new FormData(); fd.append('image', file);
+      const ir = await fetch(`${API}/portfolio/${saved.id}/image`, {method:'POST', headers:{Authorization:`Bearer ${TOKEN}`}, body:fd});
+      const id2 = await ir.json();
+      if (id2.imageUrl) { saved.imageUrl=id2.imageUrl; await fetch(`${API}/portfolio/${saved.id}`,{method:'PUT',headers:H(),body:JSON.stringify({...saved})}); }
+    }
+    closeModal('pf-modal'); toast('Project saved!','success'); loadAll();
+  } catch { toast('Error saving project','error'); }
+  btn.textContent='Save Project'; btn.disabled=false;
+});
+
+// Slug auto-generate
+document.getElementById('pf-title').addEventListener('input', e => {
+  const slug = document.getElementById('pf-slug');
+  if (!slug.dataset.manual) slug.value = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+});
+document.getElementById('pf-slug').addEventListener('input', e => { e.target.dataset.manual='true'; });
+
+/* ── File preview for portfolio ── */
+document.getElementById('pf-img-file').addEventListener('change', e => {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>{const p=document.getElementById('pf-img-prev');p.src=ev.target.result;p.style.display='block';}; r.readAsDataURL(f);
+});
+
+/* ══════════════════════════════════════════════════════════════
+   LOGO PICKER
+   ══════════════════════════════════════════════════════════════ */
+function openLogoPicker() {
+  const grid = document.getElementById('logo-picker-grid');
+  const current = document.getElementById('pf-logo-url').value;
+  grid.innerHTML = clientsData.map(c=>`
+    <div class="logo-tile ${c.imageUrl===current?'selected':''}" onclick="pickLogo('${c.imageUrl}','${c.name.replace(/'/g,"\\'")}')">
+      <img src="${c.imageUrl}" alt="${c.name}" onerror="this.style.opacity=0.3" />
+      <span>${c.name}</span>
+    </div>`).join('') || '<p style="padding:1rem;color:var(--muted)">No logos uploaded yet. Add them in Client Logos.</p>';
+  document.getElementById('logo-picker-modal').classList.add('open');
+}
+
+function pickLogo(url, name) {
+  setPickedLogo(url, name);
+  closeModal('logo-picker-modal');
+}
+
+function setPickedLogo(url, name) {
+  document.getElementById('pf-logo-url').value = url;
+  const cur = document.getElementById('pf-logo-current');
+  cur.style.display = url ? 'flex' : 'none';
+  cur.innerHTML = url ? `
+    <img src="${url}" alt="${name}" style="width:80px;height:48px;object-fit:contain;border-radius:4px;background:#f4f6f8;padding:4px;" />
+    <span style="font-size:.85rem;font-weight:600;">${name}</span>
+    <button type="button" class="clear-logo" onclick="setPickedLogo('','')"><i class="fas fa-times"></i> Remove</button>` : '';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CLIENTS TABLE
+   ══════════════════════════════════════════════════════════════ */
+function renderClients() {
+  const tb = document.getElementById('cl-tbody');
+  if (!clientsData.length) { tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--muted)">No clients yet.</td></tr>'; return; }
+  tb.innerHTML = clientsData.map(c=>`
+    <tr>
+      <td><img class="logo-thumb" src="${c.imageUrl||''}" alt="${c.name}" onerror="this.style.opacity=0.3" /></td>
+      <td><strong>${c.name}</strong></td>
+      <td>${c.link?`<a href="../${c.link}" target="_blank" style="color:var(--teal)">${c.link}</a>`:'—'}</td>
+      <td><div class="action-grp">
+        <button class="btn btn-edit btn-sm" onclick="editClient('${c.id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openClModal(item=null) {
+  document.getElementById('cl-form').reset();
+  document.getElementById('cl-img-prev').style.display='none';
+  document.getElementById('cl-id').value      = item?.id || '';
+  document.getElementById('cl-name').value    = item?.name || '';
+  document.getElementById('cl-img-url').value = item?.imageUrl || '';
+  document.getElementById('cl-link').value    = item?.link || '';
+  if (item?.imageUrl) { const p=document.getElementById('cl-img-prev'); p.src=item.imageUrl; p.style.display='block'; }
+  document.getElementById('cl-modal-title').textContent = item ? 'Edit Client' : 'Add Client Logo';
+  document.getElementById('cl-modal').classList.add('open');
+}
+function editClient(id)  { openClModal(clientsData.find(c=>c.id===id)); }
+async function deleteClient(id) {
+  if (!confirm('Delete this client?')) return;
+  await fetch(`${API}/clients/${id}`, {method:'DELETE', headers:H()});
+  toast('Client deleted'); loadAll();
+}
+document.getElementById('add-cl-btn').addEventListener('click', ()=>openClModal());
+document.getElementById('cl-img-file').addEventListener('change', e => {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>{const p=document.getElementById('cl-img-prev');p.src=ev.target.result;p.style.display='block';}; r.readAsDataURL(f);
+});
+document.getElementById('cl-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = document.getElementById('cl-id').value;
+  const body = { id:id||undefined, name:document.getElementById('cl-name').value.trim(), imageUrl:document.getElementById('cl-img-url').value.trim(), link:document.getElementById('cl-link').value.trim() };
+  const method=id?'PUT':'POST', url=id?`${API}/clients/${id}`:`${API}/clients`;
+  try {
+    const res=await fetch(url,{method,headers:H(),body:JSON.stringify(body)});
+    const saved=await res.json();
+    const file=document.getElementById('cl-img-file').files[0];
+    if (file&&saved.id) {
+      const fd=new FormData();fd.append('image',file);
+      const ir=await fetch(`${API}/clients/${saved.id}/image`,{method:'POST',headers:{Authorization:`Bearer ${TOKEN}`},body:fd});
+      const id2=await ir.json();
+      if(id2.imageUrl){saved.imageUrl=id2.imageUrl;await fetch(`${API}/clients/${saved.id}`,{method:'PUT',headers:H(),body:JSON.stringify({...saved})});}
+    }
+    closeModal('cl-modal'); toast('Client saved!','success'); loadAll();
+  } catch { toast('Error saving client','error'); }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   INQUIRIES
+   ══════════════════════════════════════════════════════════════ */
+function renderInquiries() {
+  const tb = document.getElementById('inq-tbody');
+  if (!inquiriesData.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">No inquiries yet.</td></tr>'; return; }
+  tb.innerHTML = inquiriesData.map(i=>`
+    <tr class="${!i.read?'unread':''}">
+      <td>${!i.read?'<span class="unread-dot"></span>':''}</td>
+      <td style="white-space:nowrap;font-size:.82rem">${fmtDate(i.date)}</td>
+      <td>${i.name||'—'}</td>
+      <td><a href="mailto:${i.email}" style="color:var(--teal)">${i.email||'—'}</a></td>
+      <td><div class="purpose-list">${(i.purpose||[]).map(p=>`<span class="pill">${p}</span>`).join('')}</div></td>
+      <td><div class="action-grp">
+        <button class="btn btn-edit btn-sm" onclick="viewInquiry('${i.id}')"><i class="fas fa-eye"></i> View</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteInquiry('${i.id}')"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function viewInquiry(id) {
+  const i = inquiriesData.find(x=>x.id===id);
+  if (!i) return;
+  document.getElementById('inq-detail-body').innerHTML = `
+    <div class="inq-detail-row"><span class="lbl">Date</span><span class="val">${fmtDate(i.date)}</span></div>
+    <div class="inq-detail-row"><span class="lbl">Name</span><span class="val">${i.name||'—'}</span></div>
+    <div class="inq-detail-row"><span class="lbl">Email</span><span class="val"><a href="mailto:${i.email}" style="color:var(--teal)">${i.email}</a></span></div>
+    <div class="inq-detail-row"><span class="lbl">Company</span><span class="val">${i.company||'—'}</span></div>
+    <div class="inq-detail-row"><span class="lbl">Purpose</span><span class="val">${(i.purpose||[]).join(', ')||'—'}</span></div>
+    <div class="inq-detail-row"><span class="lbl">Newsletter</span><span class="val">${i.newsletter?'Yes':'No'}</span></div>
+    <div class="inq-detail-row" style="align-items:flex-start"><span class="lbl">Message</span><span class="val" style="white-space:pre-wrap">${i.message||'—'}</span></div>`;
+  document.getElementById('inq-modal').classList.add('open');
+  if (!i.read) { fetch(`${API}/inquiries/${id}/read`,{method:'PUT',headers:H()}); i.read=true; renderInquiries(); updateStats(); }
+}
+
+async function deleteInquiry(id) {
+  if (!confirm('Delete this inquiry?')) return;
+  await fetch(`${API}/inquiries/${id}`,{method:'DELETE',headers:H()});
+  toast('Deleted'); loadAll();
+}
+
+async function clearAllInquiries() {
+  if (!confirm('Delete ALL inquiries? This cannot be undone.')) return;
+  await fetch(`${API}/inquiries`,{method:'DELETE',headers:H()});
+  toast('All inquiries cleared'); loadAll();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NEWSLETTER
+   ══════════════════════════════════════════════════════════════ */
+function renderNewsletter() {
+  const tb = document.getElementById('news-tbody');
+  if (!newsletterData.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">No subscribers yet.</td></tr>'; return; }
+  tb.innerHTML = newsletterData.map(s=>`
+    <tr>
+      <td><a href="mailto:${s.email}" style="color:var(--teal)">${s.email}</a></td>
+      <td>${s.name||'—'}</td>
+      <td><span class="pill">${s.source||'footer'}</span></td>
+      <td style="font-size:.82rem">${fmtDate(s.date)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteSubscriber('${s.id}')"><i class="fas fa-trash"></i></button></td>
+    </tr>`).join('');
+}
+
+async function deleteSubscriber(id) {
+  if (!confirm('Remove subscriber?')) return;
+  await fetch(`${API}/newsletter/${id}`,{method:'DELETE',headers:H()});
+  toast('Subscriber removed'); loadAll();
+}
+
+function exportNewsletter() {
+  const rows = [['Email','Name','Source','Date'], ...newsletterData.map(s=>[s.email,s.name||'',s.source||'',fmtDate(s.date)])];
+  const csv = rows.map(r=>r.map(c=>`"${(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `newsletter-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SETTINGS / TAXONOMY
+   ══════════════════════════════════════════════════════════════ */
+function renderTaxonomyPanel() {
+  ['categories','tags','services'].forEach(key => {
+    const container = document.getElementById(`tax-${key}`);
+    container.innerHTML = taxonomy[key].map(v=>`
+      <span class="tag-item">${v}<button class="del-tag" title="Remove" onclick="removeTax('${key}','${v.replace(/'/g,"\\'")}')">×</button></span>`).join('');
+  });
+}
+
+async function saveTaxonomy() {
+  await fetch(`${API}/taxonomy`,{method:'PUT',headers:H(),body:JSON.stringify(taxonomy)});
+}
+
+async function addTax(key) {
+  const inputId = key==='categories'?'new-category':key==='tags'?'new-tag':'new-service';
+  const val = document.getElementById(inputId).value.trim();
+  if (!val) return;
+  if (!taxonomy[key].includes(val)) {
+    taxonomy[key].push(val);
+    await saveTaxonomy();
+    renderTaxonomyPanel();
+    toast(`Added to ${key}`, 'success');
+  }
+  document.getElementById(inputId).value = '';
+}
+
+async function removeTax(key, val) {
+  taxonomy[key] = taxonomy[key].filter(v=>v!==val);
+  await saveTaxonomy();
+  renderTaxonomyPanel();
+}
+
+// Allow Enter key in taxonomy inputs
+['new-category','new-tag','new-service'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => {
+    if (e.key==='Enter') { e.preventDefault(); const k=id==='new-category'?'categories':id==='new-tag'?'tags':'services'; addTax(k); }
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   TRANSFERS
+   ══════════════════════════════════════════════════════════════ */
+let transfersData = [];
+let recipientsData = [];
+let pendingFiles = []; // { file: File, key?: string }
+
+/* ── Render transfers table ── */
+function renderTransfers() {
+  const tb = document.getElementById('tr-tbody');
+  if (!transfersData.length) {
+    tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">No transfers yet.</td></tr>';
+    return;
+  }
+  const now = new Date();
+  tb.innerHTML = transfersData.map(t => {
+    const exp = new Date(t.expiresAt);
+    const expired = exp < now;
+    const expStr = exp.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const fileCount = (t.files||[]).length;
+    const url = `${location.origin}/download/${t.slug}`;
+    const dlCount = (t.downloads||[]).length;
+    const lastDl  = dlCount ? new Date((t.downloads[dlCount-1].at)) : null;
+    const dlBadge = dlCount
+      ? `<span style="display:inline-flex;align-items:center;gap:.3rem;color:#16a34a;font-weight:700;font-size:.82rem;">
+           <i class="fas fa-check-circle"></i> ${dlCount}× &nbsp;
+           <span style="font-weight:400;color:var(--muted);font-size:.75rem;">${lastDl.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>
+         </span>`
+      : `<span style="display:inline-flex;align-items:center;gap:.3rem;color:#aaa;font-size:.82rem;">
+           <i class="fas fa-clock"></i> Not yet
+         </span>`;
+    return `<tr>
+      <td><strong>${t.title}</strong><br><small style="color:var(--muted);font-size:.75rem;">${new Date(t.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</small></td>
+      <td>${t.clientName}<br><small style="color:var(--muted)">${t.clientEmail}</small></td>
+      <td style="font-size:.85rem;">${fileCount} file${fileCount!==1?'s':''}</td>
+      <td style="font-size:.82rem;${expired?'color:#dc2626':''}">${expStr}${expired?'<br><small>(expired)</small>':''}</td>
+      <td>${dlBadge}${dlCount > 1 ? `<br><button onclick="viewDownloads('${t.id}')" style="background:none;border:none;color:var(--teal);font-size:.72rem;cursor:pointer;padding:2px 0;text-decoration:underline;">view history</button>` : ''}</td>
+      <td><div class="action-grp">
+        <button class="btn btn-edit btn-sm" onclick="copyLink('${url}')"><i class="fas fa-copy"></i> Copy Link</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTransfer('${t.id}')"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function viewDownloads(id) {
+  const t = transfersData.find(x => x.id === id);
+  if (!t) return;
+  const rows = (t.downloads||[]).map(d =>
+    `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.87rem;">
+       <span>${new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}</span>
+       <span style="color:var(--muted);font-size:.78rem;">${d.ip||'—'}</span>
+     </div>`
+  ).join('');
+  document.getElementById('inq-detail-body').innerHTML = `
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem;">
+      <strong style="color:var(--dark)">${t.clientName}</strong> downloaded <strong>${t.title}</strong> ${t.downloads.length} time${t.downloads.length!==1?'s':''}.
+    </p>
+    <div style="max-height:300px;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border);">
+        <span>Date &amp; Time</span><span>IP Address</span>
+      </div>
+      ${rows}
+    </div>`;
+  document.getElementById('inq-modal').querySelector('.modal-hdr h3').textContent = 'Download History';
+  document.getElementById('inq-modal').classList.add('open');
+}
+
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => toast('Link copied!', 'success'));
+}
+
+async function deleteTransfer(id) {
+  if (!confirm('Delete this transfer? Files will be removed from storage.')) return;
+  await fetch(`${API}/transfers/${id}`, {method:'DELETE', headers:H()});
+  toast('Transfer deleted'); loadAll();
+}
+
+document.getElementById('new-transfer-btn').addEventListener('click', () => {
+  pendingFiles = [];
+  document.getElementById('tr-file-input').value = '';
+  const trTitle = document.getElementById('tr-title');
+  trTitle.value = ''; trTitle.dataset.manual = '';
+  document.getElementById('tr-client-name').value = '';
+  document.getElementById('tr-client-email').value = '';
+  document.getElementById('tr-password').value = '';
+  document.getElementById('tr-expiry').value = '30';
+  document.getElementById('tr-file-list').style.display = 'none';
+  document.getElementById('tr-file-list').innerHTML = '';
+  document.getElementById('tr-step-1').style.display = '';
+  document.getElementById('tr-step-2').style.display = 'none';
+  document.getElementById('tr-step-3').style.display = 'none';
+  document.getElementById('tr-send-btn').disabled = false;
+  document.getElementById('tr-send-btn').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Upload & Send';
+  document.getElementById('tr-modal').classList.add('open');
+});
+
+/* ── Drag & drop / file select ── */
+const dropzone = document.getElementById('tr-dropzone');
+const fileInput = document.getElementById('tr-file-input');
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.style.borderColor = 'var(--teal)'; dropzone.style.background = '#ddf0f7'; });
+dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor = 'var(--teal-l)'; dropzone.style.background = 'var(--pale)'; });
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.style.borderColor = 'var(--teal-l)'; dropzone.style.background = 'var(--pale)';
+  addFiles([...e.dataTransfer.files]);
+});
+fileInput.addEventListener('change', () => addFiles([...fileInput.files]));
+
+function addFiles(files) {
+  const wasEmpty = pendingFiles.length === 0;
+  files.forEach(f => {
+    if (!pendingFiles.find(p => p.file.name === f.name && p.file.size === f.size)) {
+      pendingFiles.push({ file: f });
+    }
+  });
+  // Auto-fill title with first file name (strip extension) if user hasn't typed anything
+  if (wasEmpty && pendingFiles.length > 0) {
+    const titleEl = document.getElementById('tr-title');
+    if (!titleEl.dataset.manual) {
+      const firstName = pendingFiles[0].file.name.replace(/\.[^/.]+$/, '');
+      titleEl.value = firstName;
+    }
+  }
+  renderFileList();
+}
+
+document.getElementById('tr-title').addEventListener('input', function() {
+  this.dataset.manual = this.value ? 'true' : '';
+});
+
+function removeFile(idx) {
+  pendingFiles.splice(idx, 1);
+  renderFileList();
+}
+
+function fmtSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  if (b < 1024*1024*1024) return (b/1024/1024).toFixed(1) + ' MB';
+  return (b/1024/1024/1024).toFixed(2) + ' GB';
+}
+
+function renderFileList() {
+  const el = document.getElementById('tr-file-list');
+  if (!pendingFiles.length) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:.4rem;">` +
+    pendingFiles.map((p, i) => `
+      <div style="display:flex;align-items:center;gap:.6rem;background:#fafbfc;border:1px solid var(--border);border-radius:6px;padding:8px 12px;">
+        <span style="font-size:1rem;">📄</span>
+        <span style="flex:1;font-size:.85rem;font-weight:600;color:var(--dark);word-break:break-all;">${p.file.name}</span>
+        <span style="font-size:.78rem;color:var(--muted);white-space:nowrap;">${fmtSize(p.file.size)}</span>
+        <button onclick="removeFile(${i})" style="background:none;border:none;color:#dc2626;font-size:1rem;cursor:pointer;padding:0;">×</button>
+      </div>`).join('') + `</div>`;
+}
+
+/* ── Recipient autocomplete (fires from both name and email fields) ── */
+function showSuggestions(val) {
+  const sug = document.getElementById('tr-suggestions');
+  if (!val || !recipientsData.length) { sug.style.display = 'none'; return; }
+  const lower = val.toLowerCase();
+  const matches = recipientsData.filter(r =>
+    r.email.toLowerCase().includes(lower) || (r.name||'').toLowerCase().includes(lower)
+  ).slice(0, 8);
+  if (!matches.length) { sug.style.display = 'none'; return; }
+  sug.style.display = 'block';
+  sug.innerHTML = matches.map(r => `
+    <div onclick="selectRecipient('${r.email.replace(/'/g,"\\'")}','${(r.name||'').replace(/'/g,"\\'")}')"
+         style="display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;cursor:pointer;font-size:.88rem;transition:background .15s;"
+         onmouseover="this.style.background='var(--pale)'" onmouseout="this.style.background=''">
+      <span style="width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">
+        ${(r.name||'?')[0].toUpperCase()}
+      </span>
+      <span>
+        <strong style="display:block;color:var(--dark)">${r.name||''}</strong>
+        <span style="color:var(--muted);font-size:.8rem;">${r.email}</span>
+      </span>
+    </div>`).join('');
+}
+
+document.getElementById('tr-client-email').addEventListener('input', function() { showSuggestions(this.value); });
+document.getElementById('tr-client-name').addEventListener('input', function() { showSuggestions(this.value); });
+
+function selectRecipient(email, name) {
+  document.getElementById('tr-client-email').value = email;
+  document.getElementById('tr-client-name').value = name;
+  document.getElementById('tr-suggestions').style.display = 'none';
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#tr-client-email') && !e.target.closest('#tr-client-name') && !e.target.closest('#tr-suggestions')) {
+    document.getElementById('tr-suggestions').style.display = 'none';
+  }
+});
+
+/* ── Upload & send ── */
+const CHUNK = 100 * 1024 * 1024; // 100 MB multipart threshold
+
+async function startTransfer() {
+  const title       = document.getElementById('tr-title').value.trim();
+  const clientName  = document.getElementById('tr-client-name').value.trim();
+  const clientEmail = document.getElementById('tr-client-email').value.trim();
+  const password    = document.getElementById('tr-password').value.trim();
+  const expiryDays  = document.getElementById('tr-expiry').value;
+
+  if (!title || !clientName || !clientEmail) { toast('Please fill in all required fields', 'error'); return; }
+  if (!pendingFiles.length) { toast('Please select at least one file', 'error'); return; }
+
+  document.getElementById('tr-step-1').style.display = 'none';
+  document.getElementById('tr-step-2').style.display = '';
+
+  const bar   = document.getElementById('tr-progress-bar');
+  const label = document.getElementById('tr-progress-label');
+  const detail= document.getElementById('tr-progress-detail');
+
+  const uploadedFiles = [];
+  let totalBytes = pendingFiles.reduce((s, p) => s + p.file.size, 0);
+  let doneBytes  = 0;
+
+  function setProgress(pct, lbl, det) {
+    bar.style.width = pct + '%';
+    if (lbl) label.textContent = lbl;
+    if (det) detail.textContent = det;
+  }
+
+  try {
+    for (let fi = 0; fi < pendingFiles.length; fi++) {
+      const { file } = pendingFiles[fi];
+      label.textContent = `Uploading ${fi + 1} of ${pendingFiles.length}…`;
+      detail.textContent = file.name;
+
+      let key;
+      if (file.size <= CHUNK) {
+        // Small file — direct upload via server proxy
+        const fd = new FormData(); fd.append('file', file);
+        const r = await fetch(`${API}/transfers/upload-small`, {
+          method: 'POST', headers: { Authorization: `Bearer ${TOKEN}` }, body: fd
+        });
+        const d = await r.json();
+        if (!d.key) throw new Error(d.error || 'Upload failed');
+        key = d.key;
+        doneBytes += file.size;
+        setProgress(Math.round(doneBytes/totalBytes*90));
+      } else {
+        // Large file — browser-side multipart directly to R2
+        const startR = await fetch(`${API}/transfers/multipart/start`, {
+          method: 'POST', headers: H(), body: JSON.stringify({ filename: file.name, contentType: file.type || 'application/octet-stream' })
+        });
+        const { uploadId, key: mKey } = await startR.json();
+        key = mKey;
+
+        const partSize = 50 * 1024 * 1024; // 50 MB parts
+        const partCount = Math.ceil(file.size / partSize);
+        const parts = [];
+
+        for (let p = 0; p < partCount; p++) {
+          const start = p * partSize;
+          const chunk = file.slice(start, start + partSize);
+          const partNumber = p + 1;
+
+          const urlR = await fetch(`${API}/transfers/multipart/part-url`, {
+            method: 'POST', headers: H(), body: JSON.stringify({ key, uploadId, partNumber })
+          });
+          const { url } = await urlR.json();
+
+          const uploadR = await fetch(url, { method: 'PUT', body: chunk });
+          const etag = uploadR.headers.get('ETag') || uploadR.headers.get('etag') || `"part${partNumber}"`;
+          parts.push({ PartNumber: partNumber, ETag: etag });
+
+          doneBytes += chunk.size;
+          setProgress(Math.round(doneBytes/totalBytes*90), null, `Part ${partNumber}/${partCount} of ${file.name}`);
+        }
+
+        await fetch(`${API}/transfers/multipart/complete`, {
+          method: 'POST', headers: H(), body: JSON.stringify({ key, uploadId, parts })
+        });
+      }
+
+      uploadedFiles.push({ key, name: file.name, size: file.size });
+    }
+
+    setProgress(95, 'Creating transfer…', 'Almost done…');
+
+    const res = await fetch(`${API}/transfers`, {
+      method: 'POST', headers: H(),
+      body: JSON.stringify({ title, clientName, clientEmail, expiryDays, password: password||undefined, files: uploadedFiles })
+    });
+    const record = await res.json();
+
+    setProgress(100, 'Done!', 'Transfer sent successfully.');
+
+    const link = `${location.origin}/download/${record.slug}`;
+    document.getElementById('tr-link-out').value = link;
+    document.getElementById('tr-step-2').style.display = 'none';
+    document.getElementById('tr-step-3').style.display = '';
+
+  } catch (e) {
+    toast('Upload failed: ' + e.message, 'error');
+    document.getElementById('tr-step-1').style.display = '';
+    document.getElementById('tr-step-2').style.display = 'none';
+  }
+}
+
+function copyTransferLink() {
+  const val = document.getElementById('tr-link-out').value;
+  navigator.clipboard.writeText(val).then(() => toast('Link copied!', 'success'));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CLIENT DATABASE
+   ══════════════════════════════════════════════════════════════ */
+function renderRecipients() {
+  const tb = document.getElementById('rec-tbody');
+  if (!tb) return;
+  if (!recipientsData.length) {
+    tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted)">No clients yet. They appear here automatically after you send a transfer.</td></tr>';
+    return;
+  }
+  // Sort by lastUsed descending
+  const sorted = [...recipientsData].sort((a, b) => new Date(b.lastUsed||0) - new Date(a.lastUsed||0));
+  tb.innerHTML = sorted.map(r => {
+    const transfers = transfersData.filter(t => t.clientEmail === r.email);
+    const lastUsed = r.lastUsed ? new Date(r.lastUsed).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <span style="width:34px;height:34px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0;">
+            ${(r.name||'?')[0].toUpperCase()}
+          </span>
+          <strong>${r.name||'—'}</strong>
+        </div>
+      </td>
+      <td><a href="mailto:${r.email}" style="color:var(--teal)">${r.email}</a></td>
+      <td style="font-size:.82rem;color:var(--muted)">${lastUsed}</td>
+      <td style="font-size:.85rem">${transfers.length} transfer${transfers.length!==1?'s':''}</td>
+      <td><div class="action-grp">
+        <button class="btn btn-edit btn-sm" onclick="editRecipient('${r.id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRecipient('${r.id}')"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function editRecipient(id) {
+  const r = recipientsData.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('rec-id').value    = r.id;
+  document.getElementById('rec-name').value  = r.name || '';
+  document.getElementById('rec-email').value = r.email || '';
+  document.getElementById('rec-modal').classList.add('open');
+}
+
+async function deleteRecipient(id) {
+  if (!confirm('Remove this client from the database?')) return;
+  await fetch(`${API}/recipients/${id}`, {method:'DELETE', headers:H()});
+  toast('Client removed'); loadAll();
+}
+
+document.getElementById('rec-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id    = document.getElementById('rec-id').value;
+  const name  = document.getElementById('rec-name').value.trim();
+  const email = document.getElementById('rec-email').value.trim();
+  if (!name || !email) return;
+  await fetch(`${API}/recipients/${id}`, {method:'PUT', headers:H(), body:JSON.stringify({name, email})});
+  closeModal('rec-modal');
+  toast('Client updated', 'success');
+  loadAll();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════════ */
+loadAll();
+</script>
+</body>
+</html>
