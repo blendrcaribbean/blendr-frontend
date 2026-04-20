@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Blendr Branding &amp; Design</title>
+  <meta name="description" content="Blendr's creative services: design, branding, marketing, consulting, animation, and web development." />
+  <link rel="icon" href="https://blendrcaribbean.com/wp-content/uploads/2020/04/cropped-Blendr-Favicon-02-32x32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+
+  <div class="page-transition" id="page-transition"></div>
+
+  <!-- ── HEADER ──────────────────────────────────────────────── -->
+  <header class="site-header scrolled" id="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <img src="https://blendrcaribbean.com/wp-content/uploads/2021/04/Blendr-Logo_LB-1024x431.png"
+             alt="Blendr Branding &amp; Design" />
+      </a>
+      <nav class="site-nav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html" class="active">Services</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-social">
+          <a href="http://instagram.com/blendrdesign" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="http://facebook.com/blendrdesign" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="http://behance.com/blendrcaribbean" target="_blank" rel="noopener" aria-label="Behance"><i class="fab fa-behance"></i></a>
+        </div>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="services.html" class="active">Services</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="contact.html">Contact</a>
+    <div class="mobile-social">
+      <a href="http://instagram.com/blendrdesign" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+      <a href="http://facebook.com/blendrdesign" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+      <a href="http://behance.com/blendrcaribbean" target="_blank" rel="noopener"><i class="fab fa-behance"></i></a>
+      <a href="https://www.linkedin.com/company/blendrmd" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- ── HERO ──────────────────────────────────────────────── -->
+    <section class="hero hero-inner">
+      <div class="hero-bg"
+           style="background-image: url('https://blendrcaribbean.com/wp-content/uploads/2022/02/frederik-danko-oHlTJx8U5V8-unsplash-scaled.jpg');">
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Services</h1>
+        <p class="hero-sub">What We Do</p>
+      </div>
+    </section>
+
+    <!-- ── WHAT WE DO ────────────────────────────────────────── -->
+    <section class="what-we-do">
+      <div class="container">
+        <div class="fade-in">
+          <p class="about-label">What We Offer</p>
+          <h2 class="h-mixed"><span class="h-script">what</span> <span class="h-bold">we do</span></h2>
+          <p>At Blendr, design begins with understanding.<br>We listen carefully, explore deeply, and create with intention.<br>Our work is shaped by clarity, creativity, and respect for the people behind every brand.</p>
+          <p style="margin-top:1rem;">We believe strong design is not decoration.<br>It is a tool for connection, growth, and identity.</p>
+          <p style="margin-top:1rem;">When we work together, we focus on creating something meaningful, thoughtful, and built to endure.</p>
+          <a href="contact.html" class="btn btn-outline-light" style="margin-top:2rem;">Start a Project</a>
+        </div>
+        <div class="fade-in-right delay-2">
+          <img src="https://blendrcaribbean.com/wp-content/uploads/2022/02/frederik-danko-oHlTJx8U5V8-unsplash-scaled.jpg"
+               alt="Creative design process" loading="lazy"
+               style="border-radius:4px; width:100%;" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MARQUEE ───────────────────────────────────────────── -->
+    <section class="services-marquee" aria-hidden="true">
+      <div class="marquee-track" id="marquee-track">
+        <!-- Set 1 -->
+        <div class="marquee-item"><span>Design</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Brand</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Animate</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Develop</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Consult</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Market</span><div class="dot"></div></div>
+        <!-- Set 2 (duplicate for seamless loop) -->
+        <div class="marquee-item"><span>Design</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Brand</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Animate</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Develop</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Consult</span><div class="dot"></div></div>
+        <div class="marquee-item"><span>Market</span><div class="dot"></div></div>
+      </div>
+    </section>
+
+    <!-- ── SERVICE CARDS ─────────────────────────────────────── -->
+    <section class="services-grid-section">
+      <div class="container">
+        <h2 class="h-we fade-in"><span class="we">we</span><span class="design">design</span></h2>
+        <div class="services-grid">
+
+          <div class="service-card fade-in delay-1">
+            <h3>Design</h3>
+            <p>We create visual identities shaped by meaning and intention.<br>From logos to printed materials and digital experiences, every piece is built to strengthen your brand and deepen connection.</p>
+          </div>
+
+          <div class="service-card fade-in delay-2">
+            <h3>Branding</h3>
+            <p>A brand is more than recognition. It is voice, character, and presence.<br>We help define what your brand stands for and translate it into a clear and cohesive identity.</p>
+          </div>
+
+          <div class="service-card fade-in delay-3">
+            <h3>Marketing</h3>
+            <p>Communication should feel natural, not forced.<br>We develop strategies and materials that speak clearly, reach the right audience, and build long term trust.</p>
+          </div>
+
+          <div class="service-card fade-in delay-1">
+            <h3>Consulting</h3>
+            <p>Every project begins with understanding.<br>We work alongside you to clarify direction, uncover opportunities, and shape thoughtful solutions.</p>
+          </div>
+
+          <div class="service-card fade-in delay-2">
+            <h3>Animation</h3>
+            <p>Movement brings stories to life.<br>We create animation that communicates ideas, introduces brands, and makes messages memorable.</p>
+          </div>
+
+          <div class="service-card fade-in delay-3">
+            <h3>Development</h3>
+            <p>Design should function as beautifully as it looks.<br>We build digital experiences that are intuitive, responsive, and crafted to last.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONTACT CTA ───────────────────────────────────────── -->
+    <section class="cta-section">
+      <div class="container">
+        <h2 class="h-mixed fade-in"><span class="h-bold">contact</span> <span class="h-script-orange">us</span></h2>
+        <p class="fade-in delay-1">
+          Every project begins with a conversation.
+          Tell us what you are building, what you care about, and where you want to go.
+          We listen first. Then we design with purpose.
+
+          Whether you are shaping a new brand or evolving an existing one, we are here to help you create something that feels true and lasting.
+        </p>
+        <a href="mailto:info@blendrcaribbean.com" class="btn btn-primary fade-in delay-2">Email Us</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="https://blendrcaribbean.com/wp-content/uploads/2020/04/Blendr-New-COncept-Logo-02-01.png" alt="Blendr" />
+          <p>Creative branding and design studio based in Bonaire, Dutch Caribbean.</p>
+          <div class="footer-social">
+            <a href="http://instagram.com/blendrdesign" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="http://facebook.com/blendrdesign" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="http://behance.com/blendrcaribbean" target="_blank" rel="noopener" aria-label="Behance"><i class="fab fa-behance"></i></a>
+            <a href="https://www.linkedin.com/company/blendrmd" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Contact</h5>
+          <div class="footer-contact-item">
+            <span>Caribbean</span>
+            <span>Bonaire, Dutch Caribbean</span>
+            <a href="tel:+5997010672">+599 701-0672</a>
+            <a href="mailto:bonaire@blendrcaribbean.com">bonaire@blendrcaribbean.com</a>
+          </div>
+          <div class="footer-contact-item">
+            <span>North America</span>
+            <span>Houston, Texas</span>
+            <a href="tel:+12818990479">+1 (281) 899-0479</a>
+            <a href="mailto:houston@blendrcaribbean.com">houston@blendrcaribbean.com</a>
+          </div>
+          <div class="footer-newsletter">
+            <p>Subscribe to our newsletter</p>
+            <form class="newsletter-form" novalidate>
+              <input type="email" placeholder="Your email" required aria-label="Email" />
+              <button type="submit">Go</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Copyright &copy;2024 | All Rights Reserved | Blendr Branding &amp; Design</p>
+      <div class="footer-legal-links">
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <span class="sep">|</span>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scroll-top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

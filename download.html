@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Files Are Ready — Blendr</title>
+  <link rel="icon" href="https://blendrcaribbean.com/wp-content/uploads/2020/04/cropped-Blendr-Favicon-02-32x32.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --dark: #101F21; --teal: #3D6F74; --teal-l: #B5DFEA;
+      --pale: #E9FAFF; --white: #fff; --muted: #707070; --border: #e8f4f7;
+    }
+    html, body { min-height: 100vh; }
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background: linear-gradient(160deg, #0d1e20 0%, #1a3a3f 50%, #0f2426 100%);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 2rem 1rem; min-height: 100vh;
+    }
+
+    .card {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 500px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.35); overflow: hidden;
+    }
+
+    .card-header {
+      background: var(--dark); padding: 28px 36px 24px; text-align: center;
+      border-bottom: 4px solid var(--teal);
+    }
+    .card-header img { height: 32px; filter: brightness(0) invert(1); opacity: .9; }
+
+    .card-body { padding: 36px; }
+
+    .status-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--pale); border: 2px solid var(--teal-l);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; font-size: 1.6rem;
+    }
+
+    h1 { font-size: 1.35rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; text-align: center; }
+    .greeting { font-size: .95rem; color: #555; line-height: 1.6; text-align: center; margin-bottom: 24px; }
+
+    .info-box {
+      background: var(--pale); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 18px; margin-bottom: 24px;
+    }
+    .info-row { display: flex; justify-content: space-between; align-items: center;
+      font-size: .85rem; padding: 5px 0; }
+    .info-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .info-row .lbl { color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: .72rem; }
+    .info-row .val { color: var(--dark); font-weight: 600; }
+
+    /* Password form */
+    .pw-form { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 20px; }
+    .pw-form label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--dark); }
+    .pw-form input {
+      width: 100%; padding: 11px 14px; font-size: .95rem; font-family: inherit;
+      background: var(--pale); border: 1.5px solid var(--border); border-radius: 6px;
+      outline: none; color: var(--dark); transition: border-color .2s;
+    }
+    .pw-form input:focus { border-color: var(--teal); background: #fff; }
+    .pw-err { font-size: .82rem; color: #dc2626; margin-top: -4px; display: none; }
+
+    /* File list */
+    .file-list { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 24px; }
+    .file-item {
+      display: flex; align-items: center; gap: .75rem;
+      background: #fafbfc; border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px;
+    }
+    .file-icon { color: var(--teal); font-size: 1.1rem; flex-shrink: 0; }
+    .file-name { font-size: .88rem; font-weight: 600; color: var(--dark); flex: 1; word-break: break-all; }
+    .file-size { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .file-dl {
+      font-size: .75rem; font-weight: 700; color: var(--teal); text-decoration: none;
+      padding: 5px 12px; border: 1.5px solid var(--teal-l); border-radius: 4px;
+      white-space: nowrap; transition: background .2s, color .2s;
+    }
+    .file-dl:hover { background: var(--teal); color: #fff; }
+
+    .btn {
+      display: block; width: 100%; padding: 15px; border: none; border-radius: 8px;
+      font-family: inherit; font-size: .95rem; font-weight: 700; letter-spacing: .06em;
+      cursor: pointer; transition: background .2s; text-align: center; text-decoration: none;
+    }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-teal:hover { background: #2e5559; }
+    .btn-ghost {
+      background: none; color: var(--muted); font-size: .78rem;
+      padding: 8px; margin-top: 8px; letter-spacing: .04em; font-weight: 600;
+      border: 1.5px solid var(--border); border-radius: 6px;
+    }
+
+    .card-footer {
+      background: var(--dark); padding: 18px 36px; text-align: center;
+    }
+    .card-footer p { font-size: .78rem; color: rgba(255,255,255,.4); }
+    .card-footer strong { color: var(--teal-l); font-weight: 700; letter-spacing: .05em; }
+
+    /* States */
+    .state { display: none; }
+    .state.active { display: block; }
+
+    .expired-icon { font-size: 2.5rem; text-align: center; margin-bottom: 16px; }
+    .expired-text { text-align: center; color: var(--muted); font-size: .95rem; line-height: 1.6; }
+
+    @media (max-width: 520px) {
+      .card-body { padding: 24px 20px; }
+      .card-header { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-header">
+    <img src="https://blendrcaribbean.com/wp-content/uploads/2021/04/Blendr-Logo_LB-1024x431.png" alt="Blendr" />
+  </div>
+
+  <div class="card-body">
+
+    <!-- Loading -->
+    <div class="state active" id="state-loading">
+      <div class="status-icon">⏳</div>
+      <h1>Loading…</h1>
+    </div>
+
+    <!-- Expired / not found -->
+    <div class="state" id="state-expired">
+      <div class="expired-icon">⏰</div>
+      <h1 style="text-align:center;margin-bottom:12px;">Link Expired</h1>
+      <p class="expired-text">This download link has expired or is no longer available.<br>
+        Please contact <a href="mailto:bonaire@blendrcaribbean.com" style="color:var(--teal)">Blendr</a> if you need the files re-sent.</p>
+    </div>
+
+    <!-- Password gate -->
+    <div class="state" id="state-password">
+      <div class="status-icon">🔒</div>
+      <h1>Password Required</h1>
+      <p class="greeting" id="pw-greeting"></p>
+      <div class="pw-form">
+        <label>Enter Password</label>
+        <input type="password" id="pw-input" placeholder="Enter password…" />
+        <p class="pw-err" id="pw-err">Incorrect password. Please try again.</p>
+      </div>
+      <button class="btn btn-teal" onclick="submitPassword()">Access Files</button>
+    </div>
+
+    <!-- Ready -->
+    <div class="state" id="state-ready">
+      <div class="status-icon">✅</div>
+      <h1>Your Files Are Ready</h1>
+      <p class="greeting" id="ready-greeting"></p>
+
+      <div class="info-box" id="ready-info"></div>
+      <div class="file-list" id="file-list"></div>
+    </div>
+
+  </div>
+
+  <div class="card-footer">
+    <p>Provided by <strong>BLENDR BRANDING &amp; DESIGN</strong></p>
+    <p style="margin-top:3px;font-style:italic;">Thoughtful design. Built with purpose.</p>
+  </div>
+</div>
+
+<script>
+const slug = location.pathname.split('/').pop();
+let transferData = null;
+
+function showState(id) {
+  document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function fmtSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  if (bytes < 1024*1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB';
+  return (bytes/1024/1024/1024).toFixed(2) + ' GB';
+}
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+async function init() {
+  try {
+    const res = await fetch(`/api/transfer/${slug}`);
+    if (res.status === 404 || res.status === 410) { showState('state-expired'); return; }
+    transferData = await res.json();
+
+    if (transferData.passwordRequired) {
+      document.getElementById('pw-greeting').textContent =
+        `Hey ${transferData.clientName}, your files are ready. Enter the password below to access your download.`;
+      showState('state-password');
+      document.getElementById('pw-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') submitPassword();
+      });
+    } else {
+      await loadFiles(null);
+    }
+  } catch(e) {
+    showState('state-expired');
+  }
+}
+
+async function submitPassword() {
+  const pw = document.getElementById('pw-input').value;
+  const err = document.getElementById('pw-err');
+  err.style.display = 'none';
+  await loadFiles(pw);
+}
+
+async function loadFiles(password) {
+  try {
+    const res = await fetch(`/api/transfer/${slug}/download`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: password || '' })
+    });
+    if (res.status === 401) {
+      document.getElementById('pw-err').style.display = 'block';
+      return;
+    }
+    if (!res.ok) { showState('state-expired'); return; }
+    const data = await res.json();
+    renderReady(data.files);
+  } catch {
+    showState('state-expired');
+  }
+}
+
+function renderReady(files) {
+  const t = transferData;
+  document.getElementById('ready-greeting').innerHTML =
+    `Hey ${t.clientName},<br>Your files are ready for download. You can access everything below.<br><br>
+     If you need anything else or would like any adjustments, feel free to reach out. I am always happy to help.`;
+
+  document.getElementById('ready-info').innerHTML = `
+    <div class="info-row"><span class="lbl">Transfer</span><span class="val">${t.title}</span></div>
+    <div class="info-row"><span class="lbl">Files</span><span class="val">${files.length} file${files.length !== 1 ? 's' : ''}</span></div>
+    <div class="info-row"><span class="lbl">Available Until</span><span class="val">${fmtDate(t.expiresAt)}</span></div>`;
+
+  const list = document.getElementById('file-list');
+  list.innerHTML = files.map(f => `
+    <div class="file-item">
+      <span class="file-icon">📄</span>
+      <span class="file-name">${f.name}</span>
+      <span class="file-size">${fmtSize(f.size)}</span>
+      <a class="file-dl" href="${f.url}" download="${f.name}">Download</a>
+    </div>`).join('');
+
+  showState('state-ready');
+}
+
+init();
+</script>
+</body>
+</html>
