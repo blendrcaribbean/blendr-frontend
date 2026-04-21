@@ -1227,7 +1227,7 @@ function renderTransfers() {
     const expired = exp < now;
     const expStr = exp.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const fileCount = (t.files||[]).length;
-    const url = `${location.origin}/download/${t.slug}`;
+    const url = `https://api.blendrcaribbean.com/download/${t.slug}`;
     const dlCount = (t.downloads||[]).length;
     const lastDl  = dlCount ? new Date((t.downloads[dlCount-1].at)) : null;
     const dlBadge = dlCount
@@ -1500,7 +1500,7 @@ async function startTransfer() {
 
     setProgress(100, 'Done!', 'Transfer sent successfully.');
 
-    const link = `${location.origin}/download/${record.slug}`;
+    const link = `https://api.blendrcaribbean.com/download/${record.slug}`;
     document.getElementById('tr-link-out').value = link;
     document.getElementById('tr-step-2').style.display = 'none';
     document.getElementById('tr-step-3').style.display = '';
