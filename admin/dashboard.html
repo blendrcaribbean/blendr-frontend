@@ -185,10 +185,22 @@
   @keyframes toastIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
   /* ── Responsive ── */
-  @media(max-width:900px) { .sidebar{transform:translateX(-100%);transition:transform .3s;} .sidebar.open{transform:translateX(0);} .main-wrap{margin-left:0;} .form-row{grid-template-columns:1fr;} }
+  .menu-toggle { display:none; background:none; border:none; cursor:pointer; padding:.4rem; color:var(--dark); }
+  .menu-toggle svg { width:22px; height:22px; display:block; }
+  .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:99; }
+  @media(max-width:900px) {
+    .menu-toggle { display:flex; align-items:center; }
+    .sidebar { transform:translateX(-100%); transition:transform .3s; z-index:100; position:fixed; top:0; bottom:0; }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-overlay.open { display:block; }
+    .main-wrap { margin-left:0; }
+    .form-row { grid-template-columns:1fr; }
+  }
   </style>
 </head>
 <body>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 
 <!-- ── SIDEBAR ───────────────────────────────────────────────── -->
 <aside class="sidebar" id="sidebar">
@@ -219,7 +231,14 @@
 <!-- ── MAIN ─────────────────────────────────────────────────── -->
 <div class="main-wrap">
   <header class="topbar">
-    <span class="topbar-title" id="page-title">Portfolio</span>
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <span class="topbar-title" id="page-title">Portfolio</span>
+    </div>
     <div class="topbar-actions">
       <a href="../index.html" target="_blank"><i class="fas fa-globe"></i> View Site</a>
     </div>
@@ -680,6 +699,14 @@ function toast(msg, type='') {
 /* ══════════════════════════════════════════════════════════════
    SIDEBAR NAV
    ══════════════════════════════════════════════════════════════ */
+const sidebar   = document.getElementById('sidebar');
+const overlay   = document.getElementById('sidebar-overlay');
+const menuBtn   = document.getElementById('menu-toggle');
+function openSidebar()  { sidebar.classList.add('open');  overlay.classList.add('open'); }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+menuBtn.addEventListener('click', () => sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+overlay.addEventListener('click', closeSidebar);
+
 document.querySelectorAll('.sidebar-link[data-panel]').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
@@ -688,6 +715,7 @@ document.querySelectorAll('.sidebar-link[data-panel]').forEach(link => {
     link.classList.add('active');
     document.getElementById(`panel-${link.dataset.panel}`).classList.add('active');
     document.getElementById('page-title').textContent = link.textContent.trim();
+    closeSidebar();
   });
 });
 document.getElementById('logout-btn').addEventListener('click', () => {
