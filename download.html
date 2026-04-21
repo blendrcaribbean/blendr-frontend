@@ -4,189 +4,357 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your Files Are Ready — Blendr</title>
-  <link rel="icon" href="assets/wp-images/cropped-Blendr-Favicon-02-32x32.png" />
+  <link rel="icon" href="https://blendrcaribbean.com/wp-content/uploads/2020/04/cropped-Blendr-Favicon-02-32x32.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet" />
   <style>
+    @font-face { font-family:'Magallanes'; src:url('https://api.blendrcaribbean.com/fonts/Magallanes Light.otf') format('opentype'); font-weight:300; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Magallanes'; src:url('https://api.blendrcaribbean.com/fonts/Magallanes Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Magallanes'; src:url('https://api.blendrcaribbean.com/fonts/Magallanes Bold.otf') format('opentype'); font-weight:700; font-style:normal; font-display:swap; }
+    @font-face { font-family:'Magallanes'; src:url('https://api.blendrcaribbean.com/fonts/Magallanes ExtraBold.otf') format('opentype'); font-weight:800; font-style:normal; font-display:swap; }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --dark: #101F21; --teal: #3D6F74; --teal-l: #B5DFEA;
-      --pale: #E9FAFF; --white: #fff; --muted: #707070; --border: #e8f4f7;
+      --dark:   #0d1e20;
+      --dark2:  #162a2d;
+      --teal:   #3D6F74;
+      --teal-l: #B5DFEA;
+      --teal-g: #4a8a90;
+      --pale:   #E9FAFF;
+      --white:  #fff;
+      --muted:  #8a9ea0;
+      --border: rgba(181,223,234,.18);
     }
+
     html, body { min-height: 100vh; }
+
     body {
       font-family: 'Nunito Sans', sans-serif;
-      background: linear-gradient(160deg, #0d1e20 0%, #1a3a3f 50%, #0f2426 100%);
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 2rem 1rem; min-height: 100vh;
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
     }
 
+    /* ── Animated background ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(61,111,116,.25) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(61,111,116,.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 60% 80%, rgba(181,223,234,.08) 0%, transparent 50%),
+                  linear-gradient(160deg, #0d1e20 0%, #122628 50%, #0a1a1c 100%);
+      animation: bgPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse {
+      0%   { filter: brightness(1); }
+      100% { filter: brightness(1.08); }
+    }
+
+    /* ── Floating orbs ── */
+    .orb {
+      position: fixed; border-radius: 50%; filter: blur(80px);
+      animation: orbFloat linear infinite; z-index: 0; pointer-events: none;
+    }
+    .orb-1 { width:400px; height:400px; background:rgba(61,111,116,.12); top:-100px; left:-100px; animation-duration:20s; }
+    .orb-2 { width:300px; height:300px; background:rgba(181,223,234,.07); bottom:-80px; right:-80px; animation-duration:25s; animation-delay:-10s; }
+    .orb-3 { width:200px; height:200px; background:rgba(61,111,116,.09); top:50%; left:60%; animation-duration:18s; animation-delay:-5s; }
+    @keyframes orbFloat {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(30px,-20px) scale(1.05); }
+      66%      { transform: translate(-20px,30px) scale(.95); }
+    }
+
+    /* ── Wrap ── */
+    .wrap {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 520px;
+      animation: wrapIn .7s cubic-bezier(.22,.68,0,1.2) both;
+    }
+    @keyframes wrapIn {
+      from { opacity:0; transform: translateY(40px) scale(.97); }
+      to   { opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Logo bar ── */
+    .logo-bar {
+      text-align: center; margin-bottom: 1.5rem;
+      animation: fadeDown .6s .1s ease both;
+    }
+    .logo-bar img { height: 60px; filter: brightness(0) invert(1); opacity: .85; }
+    @keyframes fadeDown {
+      from { opacity:0; transform: translateY(-12px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── Card ── */
     .card {
-      background: #fff; border-radius: 16px; width: 100%; max-width: 500px;
-      box-shadow: 0 32px 80px rgba(0,0,0,.35); overflow: hidden;
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(181,223,234,.12);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.04) inset;
     }
 
-    .card-header {
-      background: var(--dark); padding: 28px 36px 24px; text-align: center;
-      border-bottom: 4px solid var(--teal);
+    .card-inner { padding: 2.5rem 2rem; }
+
+    /* ── Teal accent line ── */
+    .teal-line {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--teal), var(--teal-l), var(--teal), transparent);
+      animation: lineGlow 3s ease-in-out infinite alternate;
     }
-    .card-header img { height: 32px; filter: brightness(0) invert(1); opacity: .9; }
+    @keyframes lineGlow {
+      from { opacity: .6; }
+      to   { opacity: 1; filter: brightness(1.3); }
+    }
 
-    .card-body { padding: 36px; }
-
-    .status-icon {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: var(--pale); border: 2px solid var(--teal-l);
+    /* ── Status icon ── */
+    .status-wrap {
+      display: flex; justify-content: center; margin-bottom: 1.5rem;
+      animation: iconPop .5s .3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes iconPop {
+      from { opacity:0; transform: scale(0); }
+      to   { opacity:1; transform: scale(1); }
+    }
+    .status-ring {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--border);
+      background: rgba(61,111,116,.15);
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px; font-size: 1.6rem;
+      font-size: 1.8rem;
+      box-shadow: 0 0 0 8px rgba(61,111,116,.08), 0 0 30px rgba(61,111,116,.2);
+      animation: ringPulse 3s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%,100% { box-shadow: 0 0 0 8px rgba(61,111,116,.08), 0 0 30px rgba(61,111,116,.2); }
+      50%      { box-shadow: 0 0 0 14px rgba(61,111,116,.04), 0 0 50px rgba(61,111,116,.35); }
     }
 
-    h1 { font-size: 1.35rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; text-align: center; }
-    .greeting { font-size: .95rem; color: #555; line-height: 1.6; text-align: center; margin-bottom: 24px; }
+    /* ── Typography ── */
+    h1 {
+      font-family: 'Magallanes', 'Nunito Sans', sans-serif;
+      font-size: 1.6rem; font-weight: 800; color: #fff;
+      text-align: center; margin-bottom: .5rem;
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+    .greeting {
+      font-size: .92rem; color: rgba(255,255,255,.55); line-height: 1.7;
+      text-align: center; margin-bottom: 1.75rem;
+    }
+    .greeting strong { color: var(--teal-l); font-weight: 700; }
 
+    /* ── Info box ── */
     .info-box {
-      background: var(--pale); border: 1px solid var(--border); border-radius: 8px;
-      padding: 14px 18px; margin-bottom: 24px;
+      background: rgba(181,223,234,.06);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
     }
-    .info-row { display: flex; justify-content: space-between; align-items: center;
-      font-size: .85rem; padding: 5px 0; }
-    .info-row:not(:last-child) { border-bottom: 1px solid var(--border); }
-    .info-row .lbl { color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: .72rem; }
-    .info-row .val { color: var(--dark); font-weight: 600; }
-
-    /* Password form */
-    .pw-form { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 20px; }
-    .pw-form label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--dark); }
-    .pw-form input {
-      width: 100%; padding: 11px 14px; font-size: .95rem; font-family: inherit;
-      background: var(--pale); border: 1.5px solid var(--border); border-radius: 6px;
-      outline: none; color: var(--dark); transition: border-color .2s;
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .45rem 0; font-size: .85rem;
     }
-    .pw-form input:focus { border-color: var(--teal); background: #fff; }
-    .pw-err { font-size: .82rem; color: #dc2626; margin-top: -4px; display: none; }
+    .info-row:not(:last-child) { border-bottom: 1px solid rgba(181,223,234,.08); }
+    .info-row .lbl { color: var(--muted); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .7rem; }
+    .info-row .val { color: rgba(255,255,255,.85); font-weight: 600; }
 
-    /* File list */
-    .file-list { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 24px; }
+    /* ── File list ── */
+    .file-list { display: flex; flex-direction: column; gap: .6rem; margin-bottom: 1.5rem; }
     .file-item {
-      display: flex; align-items: center; gap: .75rem;
-      background: #fafbfc; border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px;
+      display: flex; align-items: center; gap: .85rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: .85rem 1rem;
+      transition: background .2s, border-color .2s, transform .2s;
+      animation: itemSlide .4s ease both;
     }
-    .file-icon { color: var(--teal); font-size: 1.1rem; flex-shrink: 0; }
-    .file-name { font-size: .88rem; font-weight: 600; color: var(--dark); flex: 1; word-break: break-all; }
-    .file-size { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+    .file-item:hover { background: rgba(61,111,116,.12); border-color: rgba(181,223,234,.3); transform: translateX(4px); }
+    @keyframes itemSlide {
+      from { opacity:0; transform: translateX(-16px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    .file-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(61,111,116,.25); border: 1px solid rgba(61,111,116,.4);
+      display: flex; align-items: center; justify-content: center; font-size: .95rem;
+    }
+    .file-name { font-size: .875rem; font-weight: 700; color: rgba(255,255,255,.9); flex: 1; word-break: break-all; line-height: 1.3; }
+    .file-size { font-size: .75rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
     .file-dl {
-      font-size: .75rem; font-weight: 700; color: var(--teal); text-decoration: none;
-      padding: 5px 12px; border: 1.5px solid var(--teal-l); border-radius: 4px;
-      white-space: nowrap; transition: background .2s, color .2s;
+      font-family: 'Magallanes', 'Nunito Sans', sans-serif;
+      font-size: .7rem; font-weight: 700; color: var(--teal-l);
+      text-decoration: none; padding: 6px 14px;
+      border: 1.5px solid rgba(181,223,234,.3); border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0;
+      transition: background .2s, color .2s, border-color .2s;
+      letter-spacing: .12em; text-transform: uppercase;
     }
-    .file-dl:hover { background: var(--teal); color: #fff; }
+    .file-dl:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
 
+    /* ── Buttons ── */
     .btn {
-      display: block; width: 100%; padding: 15px; border: none; border-radius: 8px;
-      font-family: inherit; font-size: .95rem; font-weight: 700; letter-spacing: .06em;
-      cursor: pointer; transition: background .2s; text-align: center; text-decoration: none;
+      display: block; width: 100%; padding: 15px; border: none; border-radius: 10px;
+      font-family: 'Magallanes', 'Nunito Sans', sans-serif;
+      font-size: .85rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; transition: all .25s; text-align: center; text-decoration: none;
     }
-    .btn-teal { background: var(--teal); color: #fff; }
-    .btn-teal:hover { background: #2e5559; }
-    .btn-ghost {
-      background: none; color: var(--muted); font-size: .78rem;
-      padding: 8px; margin-top: 8px; letter-spacing: .04em; font-weight: 600;
-      border: 1.5px solid var(--border); border-radius: 6px;
+    .btn-teal {
+      background: linear-gradient(135deg, var(--teal), var(--teal-g));
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(61,111,116,.4);
     }
+    .btn-teal:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(61,111,116,.55); }
+    .btn-teal:active { transform: translateY(0); }
 
-    .card-footer {
-      background: var(--dark); padding: 18px 36px; text-align: center;
+    /* ── Password form ── */
+    .pw-form { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.25rem; }
+    .pw-form label { font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .pw-form input {
+      width: 100%; padding: 13px 16px; font-size: .95rem; font-family: inherit;
+      background: rgba(255,255,255,.06); border: 1.5px solid var(--border);
+      border-radius: 10px; outline: none; color: #fff; transition: border-color .2s, background .2s;
     }
-    .card-footer p { font-size: .78rem; color: rgba(255,255,255,.4); }
-    .card-footer strong { color: var(--teal-l); font-weight: 700; letter-spacing: .05em; }
+    .pw-form input::placeholder { color: rgba(255,255,255,.25); }
+    .pw-form input:focus { border-color: var(--teal); background: rgba(61,111,116,.1); }
+    .pw-err { font-size: .82rem; color: #f87171; display: none; text-align: center; }
 
-    /* States */
+    /* ── Spinner ── */
+    .spinner-wrap { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+    .spinner {
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 3px solid rgba(61,111,116,.2);
+      border-top-color: var(--teal-l);
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Expired ── */
+    .expired-text { text-align: center; color: rgba(255,255,255,.45); font-size: .92rem; line-height: 1.7; }
+    .expired-text a { color: var(--teal-l); }
+
+    /* ── States ── */
     .state { display: none; }
     .state.active { display: block; }
 
-    .expired-icon { font-size: 2.5rem; text-align: center; margin-bottom: 16px; }
-    .expired-text { text-align: center; color: var(--muted); font-size: .95rem; line-height: 1.6; }
+    /* ── Footer ── */
+    .card-footer {
+      padding: 1rem 2rem; text-align: center;
+      border-top: 1px solid var(--border);
+    }
+    .card-footer p { font-family: 'Magallanes', 'Nunito Sans', sans-serif; font-size: .7rem; color: rgba(255,255,255,.25); letter-spacing: .1em; }
+    .card-footer strong { color: rgba(181,223,234,.5); font-weight: 700; letter-spacing: .1em; }
 
-    @media (max-width: 520px) {
-      .card-body { padding: 24px 20px; }
-      .card-header { padding: 20px; }
+    /* ── Mobile ── */
+    @media (max-width: 540px) {
+      .card-inner { padding: 1.75rem 1.25rem; }
+      h1 { font-size: 1.25rem; }
     }
   </style>
 </head>
 <body>
 
-<div class="card">
-  <div class="card-header">
+<div class="bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="wrap">
+  <div class="logo-bar">
     <img src="https://api.blendrcaribbean.com/Blendr-Logo.png" alt="Blendr" />
   </div>
 
-  <div class="card-body">
+  <div class="card">
+    <div class="teal-line"></div>
+    <div class="card-inner">
 
-    <!-- Loading -->
-    <div class="state active" id="state-loading">
-      <div class="status-icon">⏳</div>
-      <h1>Loading…</h1>
-    </div>
-
-    <!-- Expired / not found -->
-    <div class="state" id="state-expired">
-      <div class="expired-icon">⏰</div>
-      <h1 style="text-align:center;margin-bottom:12px;">Link Expired</h1>
-      <p class="expired-text">This download link has expired or is no longer available.<br>
-        Please contact <a href="mailto:bonaire@blendrcaribbean.com" style="color:var(--teal)">Blendr</a> if you need the files re-sent.</p>
-    </div>
-
-    <!-- Password gate -->
-    <div class="state" id="state-password">
-      <div class="status-icon">🔒</div>
-      <h1>Password Required</h1>
-      <p class="greeting" id="pw-greeting"></p>
-      <div class="pw-form">
-        <label>Enter Password</label>
-        <input type="password" id="pw-input" placeholder="Enter password…" />
-        <p class="pw-err" id="pw-err">Incorrect password. Please try again.</p>
+      <!-- Loading -->
+      <div class="state active" id="state-loading">
+        <div class="spinner-wrap"><div class="spinner"></div></div>
+        <h1>Preparing your files…</h1>
+        <p class="greeting">Just a moment while we get everything ready.</p>
       </div>
-      <button class="btn btn-teal" onclick="submitPassword()">Access Files</button>
+
+      <!-- Expired -->
+      <div class="state" id="state-expired">
+        <div class="status-wrap"><div class="status-ring">⏰</div></div>
+        <h1>Link Expired</h1>
+        <p class="greeting expired-text">This download link has expired or is no longer available.<br><br>
+          Contact <a href="mailto:bonaire@blendrcaribbean.com">Blendr</a> to have your files re-sent.</p>
+      </div>
+
+      <!-- Password -->
+      <div class="state" id="state-password">
+        <div class="status-wrap"><div class="status-ring">🔒</div></div>
+        <h1>Password Required</h1>
+        <p class="greeting" id="pw-greeting"></p>
+        <div class="pw-form">
+          <label>Password</label>
+          <input type="password" id="pw-input" placeholder="Enter your password…" />
+          <p class="pw-err" id="pw-err">Incorrect password — please try again.</p>
+        </div>
+        <button class="btn btn-teal" onclick="submitPassword()">Access My Files</button>
+      </div>
+
+      <!-- Ready -->
+      <div class="state" id="state-ready">
+        <div class="status-wrap"><div class="status-ring">✅</div></div>
+        <h1 id="ready-title">Your Files Are Ready</h1>
+        <p class="greeting" id="ready-greeting"></p>
+        <div class="info-box" id="ready-info"></div>
+        <div class="file-list" id="file-list"></div>
+      </div>
+
     </div>
 
-    <!-- Ready -->
-    <div class="state" id="state-ready">
-      <div class="status-icon">✅</div>
-      <h1>Your Files Are Ready</h1>
-      <p class="greeting" id="ready-greeting"></p>
-
-      <div class="info-box" id="ready-info"></div>
-      <div class="file-list" id="file-list"></div>
+    <div class="card-footer">
+      <p>Delivered by <strong>BLENDR BRANDING &amp; DESIGN</strong><br>Thoughtful design. Built with purpose.</p>
     </div>
-
-  </div>
-
-  <div class="card-footer">
-    <p>Provided by <strong>BLENDR BRANDING &amp; DESIGN</strong></p>
-    <p style="margin-top:3px;font-style:italic;">Thoughtful design. Built with purpose.</p>
   </div>
 </div>
 
 <script>
 const slug = location.pathname.split('/').pop();
 let transferData = null;
+let currentPassword = null;
 
 function showState(id) {
   document.querySelectorAll('.state').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function fmtSize(bytes) {
-  if (!bytes) return '';
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
-  if (bytes < 1024*1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB';
-  return (bytes/1024/1024/1024).toFixed(2) + ' GB';
+function fmtSize(b) {
+  if (!b) return '';
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+  if (b < 1073741824) return (b/1048576).toFixed(1) + ' MB';
+  return (b/1073741824).toFixed(2) + ' GB';
 }
 
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function fileIcon(name) {
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  if (['jpg','jpeg','png','gif','webp','svg','avif'].includes(ext)) return '🖼️';
+  if (['mp4','mov','avi','mkv','webm'].includes(ext)) return '🎬';
+  if (['mp3','wav','aac','flac','m4a'].includes(ext)) return '🎵';
+  if (['pdf'].includes(ext)) return '📕';
+  if (['zip','rar','7z','tar','gz'].includes(ext)) return '🗜️';
+  if (['doc','docx'].includes(ext)) return '📝';
+  if (['xls','xlsx','csv'].includes(ext)) return '📊';
+  if (['ppt','pptx'].includes(ext)) return '📊';
+  if (['ai','psd','fig','sketch','indd'].includes(ext)) return '🎨';
+  return '📄';
 }
 
 async function init() {
@@ -194,10 +362,10 @@ async function init() {
     const res = await fetch(`/api/transfer/${slug}`);
     if (res.status === 404 || res.status === 410) { showState('state-expired'); return; }
     transferData = await res.json();
-
     if (transferData.passwordRequired) {
-      document.getElementById('pw-greeting').textContent =
-        `Hey ${transferData.clientName}, your files are ready. Enter the password below to access your download.`;
+      const firstName = transferData.clientName.split(' ')[0];
+      document.getElementById('pw-greeting').innerHTML =
+        `Hey <strong>${firstName}</strong>,<br>your files are ready — enter the password below to access them.`;
       showState('state-password');
       document.getElementById('pw-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') submitPassword();
@@ -205,15 +373,12 @@ async function init() {
     } else {
       await loadFiles(null);
     }
-  } catch(e) {
-    showState('state-expired');
-  }
+  } catch(e) { showState('state-expired'); }
 }
 
 async function submitPassword() {
   const pw = document.getElementById('pw-input').value;
-  const err = document.getElementById('pw-err');
-  err.style.display = 'none';
+  document.getElementById('pw-err').style.display = 'none';
   await loadFiles(pw);
 }
 
@@ -224,23 +389,42 @@ async function loadFiles(password) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: password || '' })
     });
-    if (res.status === 401) {
-      document.getElementById('pw-err').style.display = 'block';
-      return;
-    }
+    if (res.status === 401) { document.getElementById('pw-err').style.display = 'block'; return; }
     if (!res.ok) { showState('state-expired'); return; }
     const data = await res.json();
+    currentPassword = password || '';
     renderReady(data.files);
-  } catch {
-    showState('state-expired');
-  }
+  } catch { showState('state-expired'); }
+}
+
+function downloadZip() {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = `/api/transfer/${slug}/zip`;
+  const pw = document.createElement('input');
+  pw.type = 'hidden'; pw.name = 'password'; pw.value = currentPassword || '';
+  form.appendChild(pw);
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+  setTimeout(() => { window.location.href = 'https://blendrcaribbean.com'; }, 3000);
+}
+
+function startFileDownload(url, name) {
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => { window.location.href = 'https://blendrcaribbean.com'; }, 3000);
 }
 
 function renderReady(files) {
   const t = transferData;
+  const firstName = t.clientName.split(' ')[0];
   document.getElementById('ready-greeting').innerHTML =
-    `Hey ${t.clientName},<br>Your files are ready for download. You can access everything below.<br><br>
-     If you need anything else or would like any adjustments, feel free to reach out. I am always happy to help.`;
+    `Hey <strong>${firstName}</strong>,<br><br>Your files are ready for download below.<br><br>` +
+    `<span style="font-size:.85rem">If you have any questions or need any adjustments, feel free to reach out anytime.</span>`;
 
   document.getElementById('ready-info').innerHTML = `
     <div class="info-row"><span class="lbl">Transfer</span><span class="val">${t.title}</span></div>
@@ -248,12 +432,17 @@ function renderReady(files) {
     <div class="info-row"><span class="lbl">Available Until</span><span class="val">${fmtDate(t.expiresAt)}</span></div>`;
 
   const list = document.getElementById('file-list');
-  list.innerHTML = files.map(f => `
-    <div class="file-item">
-      <span class="file-icon">📄</span>
+
+  const zipBtn = files.length > 1
+    ? `<button class="btn btn-teal" onclick="downloadZip()" style="margin-bottom:1rem">⬇ Download All as ZIP</button>`
+    : '';
+
+  list.innerHTML = zipBtn + files.map((f, i) => `
+    <div class="file-item" style="animation-delay:${i * 80}ms">
+      <div class="file-icon">${fileIcon(f.name)}</div>
       <span class="file-name">${f.name}</span>
       <span class="file-size">${fmtSize(f.size)}</span>
-      <a class="file-dl" href="${f.url}" download="${f.name}">Download</a>
+      <a class="file-dl" href="#" onclick="startFileDownload('${f.url}','${f.name.replace(/'/g,"\\'")}');return false;">↓ Save</a>
     </div>`).join('');
 
   showState('state-ready');
